@@ -33,7 +33,7 @@
   <link rel="canonical" href="http://blog.shichao.io/blog/html/index.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.2',
+        VERSION:     '1.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -68,11 +68,12 @@
                   <a href="pages/about.html">About</a>
                 </li>
               </ul>
-          </nav><div class="main-container" role="main"><div class="main wrapper clearfix"><article><div class="timestamp postmeta">
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>October 01, 2014</span>
         </div>
-        <h1><a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a></h1>
-<p>Typically on OS X, I’m prone to use <a class="reference external" href="https://github.com/yyuu/pyenv">pyenv</a> to manage multiple Python versions, particularly 2.7 and 3.3. I always keep the 2.7.x Python (system version) that ships with OS X, and install extra versions using pyenv, and develop under virtualenvs. It seems <a class="reference external" href="https://github.com/pypa/virtualenv">virtualenv</a> and <a class="reference external" href="https://bitbucket.org/dhellmann/virtualenvwrapper">virtualenvwrapper</a> do not natively work well with pyenv’s shims when creating new virtualenvs, and it also seems the author of pyenv already gives the solution, <a class="reference external" href="https://github.com/yyuu/pyenv-virtualenvwrapper">pyenv-virtualenvwrapper</a>.</p>
+        <div class="section">
+            <h1><a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a></h1>
+<p>Typically on OS X, I’m prone to use <a class="reference external" href="https://github.com/yyuu/pyenv">pyenv</a> to manage multiple Python versions, particularly 2.7 and 3.3. I always keep the 2.7.x Python (system version) that ships with OS X, and install extra versions using pyenv, and develop under virtualenvs. It seems <a class="reference external" href="https://github.com/pypa/virtualenv/">virtualenv</a> and <a class="reference external" href="https://bitbucket.org/dhellmann/virtualenvwrapper/">virtualenvwrapper</a> do not natively work well with pyenv’s shims when creating new virtualenvs, and it also seems the author of pyenv already gives the solution, <a class="reference external" href="https://github.com/yyuu/pyenv-virtualenvwrapper">pyenv-virtualenvwrapper</a>.</p>
 <p>As an essential record, install Python 3.4.1 using pyenv (for installation of pyenv itself, see its <a class="reference external" href="https://github.com/yyuu/pyenv">documentation</a>) and enable it globally, along with the system version.</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ pyenv install 3.4.1</span>
 <span class="go">$ pyenv rehash</span>
@@ -108,6 +109,7 @@
 </pre></div>
 </div>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -123,7 +125,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>May 02, 2014</span>
         </div>
-        <h1><a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a></h1>
+        <div class="section">
+            <h1><a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a></h1>
 <p>It’s been a while since I maintained one of my servers that host an old project. After I got an HTTP 500 in an occasional case, I logged in to check what happened, only to find MongoDB is down. Running <span class="docutils literal"><span class="pre">service</span> <span class="pre">mongod</span> <span class="pre">restart</span></span> does not work. The MongoDB log indicates “Unclean shutdown detected.”</p>
 <p>After a search on Google, here’s what I did to fix that:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># grep dbpath /etc/mongod.conf</span>
@@ -139,6 +142,7 @@
 </div>
 <p>Finally note that this is an CentOS server. If you use MongoDB on Ubuntu, some namings may be different.</p>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -154,7 +158,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>May 01, 2014</span>
         </div>
-        <h1><a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a></h1>
+        <div class="section">
+            <h1><a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a></h1>
 <p>A Python integer is represented as either of 32-bit or 64-bit signed integer type that is platform-specific, without considering it as <a class="reference external" href="https://docs.python.org/2.7/c-api/int.html">an Python object</a>. As indicated in the documentation, whether it is 32-bit or 64-bit can be revealed by checking <span class="docutils literal"><span class="pre">sys.maxsize</span></span> (or <span class="docutils literal"><span class="pre">sys.maxint</span></span> on older CPython implementations such as 2.4), the value of which “is the largest positive integer supported by the platform’s <span class="docutils literal"><span class="pre">Py_ssize_t</span></span> type and is usually <span class="docutils literal"><span class="pre">2**31</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 32-bit platform and <span class="docutils literal"><span class="pre">2**63</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 64-bit platform”. <a class="reference external" href="https://docs.python.org/2/library/sys.html">[1]</a> <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.maxsize">[2]</a>.</p>
 <p>The following function helps determine number of bits of an integer and returns either 64 or 32 by leveraging the variable discussed above:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
@@ -186,6 +191,7 @@
 </pre></div>
 </div>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -201,7 +207,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>April 09, 2014</span>
         </div>
-        <h1><a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a></h1>
+        <div class="section">
+            <h1><a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a></h1>
 <p>Assume we want to work with files in a directory. The most intuitive way is to make use of filename expansion, using globbing. We can use the <cite>for construct</cite> and wildcard <span class="docutils literal"><span class="pre">*</span></span> to handle each file nice and clean, without worrying about those filenames that contain whitespaces (suppose that in all of the following context, the working directory contain three files: “Foo”, “Bar”, and “Foo Bar”):</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ for file in *; do echo "$file"; done</span>
 </pre></div>
@@ -253,6 +260,7 @@
 </li>
 </ol>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -268,7 +276,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>April 04, 2014</span>
         </div>
-        <h1><a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a></h1>
+        <div class="section">
+            <h1><a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a></h1>
 <p>We know that the double brackets constructs can be used in place of the <span class="docutils literal"><span class="pre">test</span></span> builtin (<span class="docutils literal"><span class="pre">[</span></span>) commonly used as single brackets to evaluate conditional expressions. The double brackets are preferred in terms of writing less error-prone scripts, though it is not POSIX-compliant (not portable to many other shells).</p>
 <p>The primary difference of double brackets from the <span class="docutils literal"><span class="pre">test</span></span> builtin is that word splitting and filename expansion are not performed within them. It is easier to understand the filename expansion difference in this case, let’s take a look at the difference of word splitting.</p>
 <ol class="arabic">
@@ -327,6 +336,7 @@
 </li>
 </ol>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -342,7 +352,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>March 20, 2014</span>
         </div>
-        <h1><a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a></h1>
+        <div class="section">
+            <h1><a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a></h1>
 <p>The Google Chrome browser I use was installed from the third-party repository by Google. The default Pepper Flash Player plugin (version 12.0) does not support some websites (such as <a class="reference external" href="http://www.bilibili.tv">www.bilibili.tv</a>). I have to install the Adobe Flash Player plugin and enable it for Google Chrome.</p>
 <p>1. Install the repository from Adobe (assuming 64-bit):</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm</span>
@@ -361,6 +372,7 @@
 <li>Restart Google Chrome, go to “<a class="reference external" href="about:plugins">about:plugins</a>” page, toggle “Details” switch at upper right corner, disable PepperFlash plugin and enable the Adobe Flash Player plugin with location “/usr/lib64/flash-plugin/libflashplayer.so”</li>
 </ol>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -376,7 +388,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>March 17, 2014</span>
         </div>
-        <h1><a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a></h1>
+        <div class="section">
+            <h1><a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a></h1>
 <p>We know that <cite>setuid</cite> bit allows a program to change its effective uid (euid) upon execution. I want to take a look at how <cite>setuid()</cite> system call works through the following experiment.</p>
 <p>Open a terminal session and run the <span class="docutils literal"><span class="pre">passwd</span></span> command (a known <cite>setuid</cite> executable) in the background (it will be suspended with a “[stopped]” output because it requires password from stdin) and get its PID (let’s assume it’s 10401) with <span class="docutils literal"><span class="pre">echo</span> <span class="pre">$!</span></span>:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ passwd &amp;</span>
@@ -411,6 +424,7 @@
  
  
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -426,7 +440,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>March 05, 2014</span>
         </div>
-        <h1><a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager’s prompt to connect to WPA Enterprise wireless networks</a></h1>
+        <div class="section">
+            <h1><a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager’s prompt to connect to WPA Enterprise wireless networks</a></h1>
 <p>This seems to be an unsolved bug (<a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=982429">#982429</a>) still under discussion. Many give temporary solutions that modify the corresponding <span class="docutils literal"><span class="pre">ifcfg-*</span></span> file and specify the password, possibly in plaintext form. Some suggest encrypting the password using <span class="docutils literal"><span class="pre">wpa_passphrase</span> <span class="pre">ESSID</span></span> command. The problematic network here is “nyu” of the New York University. Every time I turned on my laptop on the campus, it prompts with a dialog (though the password is actually stored) for me to click the “Connect” button, which is annoying. However, the encryption method does not work as far as I am concerned with Fedora 20. So I just followed the plaintext way to produce a temporary fix for that::</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># cd /etc/sysconfig/network-scripts</span>
 <span class="go"># vim ifcfg-nyu</span>
@@ -451,6 +466,7 @@
 </div>
 <p>Then, the wireless network should work as expected. Try to logout or reboot to see if it surely works.</p>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -466,7 +482,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>January 16, 2014</span>
         </div>
-        <h1><a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a></h1>
+        <div class="section">
+            <h1><a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a></h1>
 <p>Artistic Style is a “Free, Fast and Small Automatic Formatter for C, C++, C++/CLI, C#, and Java Source Code”. It is basically a utility that reformats source code in a conventionally-defined indent and coding style.</p>
 <p>First, install the program.</p>
 <p>On Ubuntu/Debian:</p>
@@ -497,6 +514,7 @@
 </pre></div>
 </div>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -512,7 +530,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>November 17, 2013</span>
         </div>
-        <h1><a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a></h1>
+        <div class="section">
+            <h1><a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a></h1>
 <p>The <a class="reference internal" href="2013/11/10/wake_suspend_machines_local_ethernet.html"><em>previous post</em></a> discusses remote suspend (sleep) and wakeup of machines on Ethernet LAN using pm-utils, GNU Screen and Wake-on-LAN (LAN). This post will discuss the synchronization of such behaviors of local and remote machines.</p>
 <p>Suppose you are regularly working at home on a Mac (either MacBook or Mac mini or something else), and you have a spare PC running as an alternative to NAS or workstation on the same Ethernet LAN. If the spare PC is Linux, you may have set up netatalk on it to enable AFP file sharing or use it as a Time Capsule. However, since it is probably a netbook and may work only when your Mac is up, you don’t want it to run all days without doing anything. You can thus synchronize sleep and wakeup of your Mac with that PC.</p>
 <p>You can download and install SleepWatcher to monitor sleep and wakeup on Mac and write some scripts upon these events.</p>
@@ -532,6 +551,7 @@ $ chmod +x ~/.sleep ~/.wakeup
 <p><span class="docutils literal"><span class="pre">/path/to/your/sleep_script.sh</span></span> and <span class="docutils literal"><span class="pre">/path/to/your/wakeup_script.sh</span></span> are scripts to suspend and wakeup the remote machine (reference the previous post). <span class="docutils literal"><span class="pre">sleep</span> <span class="pre">5</span></span> performs a delay to make sure the network is up to avoid “send : No route to host” error.
 4. Test the setup by sleeping and waking up your Mac and check whether the remote machine does the same</p>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -574,7 +594,7 @@ $ chmod +x ~/.sleep ~/.wakeup
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
-    <h1>Search</h1>
+    <h1><a href="#searchbox">Search</a></h1>
     <form action="search.html" method="get">
         <input type="text" name="q" />
         <button type="submit"><span class="fa fa-search"></span></button>

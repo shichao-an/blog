@@ -33,7 +33,7 @@
   <link rel="canonical" href="http://blog.shichao.io/blog/html/page5.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.4.2',
+        VERSION:     '1.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -68,10 +68,11 @@
                   <a href="pages/about.html">About</a>
                 </li>
               </ul>
-          </nav><div class="main-container" role="main"><div class="main wrapper clearfix"><article><div class="timestamp postmeta">
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>October 18, 2011</span>
         </div>
-        <h1><a href="2011/10/18/managing_mediawiki_api_permissions.html">管理MediaWiki API使用权限</a></h1>
+        <div class="section">
+            <h1><a href="2011/10/18/managing_mediawiki_api_permissions.html">管理MediaWiki API使用权限</a></h1>
 <p>MediaWiki提供API接口用于外部程序访问和修改网站的数据库。一般来说，最常用的外部工具就是 pywikipediabot 机器人，用于半自动地处理大量繁琐编辑工作，或者自动地执行脚本，达到维护网站的目的。</p>
 <p>然而，默认状态下，API 是对所有用户组群开放的（参见：<a class="reference external" href="http://www.mediawiki.org/wiki/Manual:User_rights#Default_rights">http://www.mediawiki.org/wiki/Manual:User_rights#Default_rights</a>），因为 <span class="docutils literal"><span class="pre">$wgEnableWriteAPI</span></span> 这个变量是隐式的 true，从而使得所有用户具有 writeapi 的默认权限。这将会对网站的安全带来隐患，尤其对于通过 API 对网站内容进行恶意破坏的机器人是毫无防御。通过简单的设置可以避免这类破坏，当然也仅仅是这类破坏，不能防止通过页面元素提交的破坏。</p>
 <p>在 <span class="docutils literal"><span class="pre">LocalSettings.php</span></span> 中添加如下代码</p>
@@ -82,6 +83,7 @@
 </div>
 <p>当然，anti-spam 需要的不仅仅是这一项。如果网站频遭人类或 bot 的 spam 或 vandalism，各类强大的插件比如：AbuseFilter、ConfirmEdit是可以使用的工具。不过前者主要用于 Wikipedia 这类大型 wiki；对于小型网站的话，后者的 Captcha 模块在需要的时候就会具有比较中肯的用处。</p>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -97,13 +99,15 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>September 24, 2011</span>
         </div>
-        <h1><a href="2011/09/24/fixing_flash_disk.html">U盘量产导致USB接口错误的解决方法</a></h1>
+        <div class="section">
+            <h1><a href="2011/09/24/fixing_flash_disk.html">U盘量产导致USB接口错误的解决方法</a></h1>
 <p>上周用一个4G的爱国者U盘做了一个系统启动盘。系统装完后，第二天刚好要去复印室打印一个重要的东西去去找老师，发现我竟然没有多余的优盘。</p>
 <p>没时间找了，再加上这个启动盘暂时没用了，于是打算格式化一下。但是突然发现无法格式化。想了很多方法，最终从网上下了一款U盘量产工具AlcorMP，把U盘修复了一下，大概20分钟，修复完毕后，U盘可以正常格式化了。第二天一早去打印了。</p>
 <p>中午回来后，发现鼠标和外接的键盘都无反应了。打开Windows 7下的设备管理器，发现USB控制器下的一个Intel(R) 5 Series/3400 Series Chipset Family USB Enhanced Host Controller – 3B34出现了问题：该设备未能启动。手动禁用后再重启，鼠标和键盘都恢复了。可是重启后该问题依然继续。总不能让我以后每次一开机都要先进行“禁用-启用”操作后才能正常使用电脑吧？为了解决它，使用了很多方法，比如更新驱动，都没有用。</p>
 <p>最后，在这个帖子 <a class="reference external" href="http://www.fanren8.com/read-htm-tid-31956.html">http://www.fanren8.com/read-htm-tid-31956.html</a> 里找到了解决办法。其实只要删除注册表几个键值就可以，记录下解决方法： 开始——运行——regedit— —来到键值[HKEY_LOCAL_MACHINESYSTEMCurrentControlSetControlClass处找到USB接口控制键值Universal Serial Bus controllers，保留默认键值以及Class，IconPath，NoInstallClass。重启后，一切正常！</p>
 <p>问题是量产软件修改了注册表导致的</p>
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -119,7 +123,8 @@
         </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>August 19, 2011</span>
         </div>
-        <h1><a href="2011/08/19/installing_pywikipedia_on_windows.html">Windows下安装Pywikipediabot</a></h1>
+        <div class="section">
+            <h1><a href="2011/08/19/installing_pywikipedia_on_windows.html">Windows下安装Pywikipediabot</a></h1>
 <p>很早就想在MediaWiki上使用bot，但一直没有去关注。MediaWiki上的bot实现有很多途径，.NET，perl，java都有，但是貌似python最容易。于是选择了PyWikipediaBot。网上关于Pywikipedia中文的资料比较少，所以就自己按照meta-wiki上的Pywikipedia的instruction中的步骤进行安装，比较简单。</p>
 <p>meta-wiki安装指南：<a class="reference external" href="http://meta.wikimedia.org/wiki/Pywikipediabot/Installation">http://meta.wikimedia.org/wiki/Pywikipediabot/Installation</a> （这个有中文版翻译）</p>
 <p>安装环境：</p>
@@ -127,9 +132,9 @@
 <p>MediaWiki 1.16.2 ，单语言（简体中文）</p>
 <p>1.下载Pywikipedia。</p>
 <p>手动下载或者TortoiseSVN都可以，后者的好处是升级方便。</p>
-<p>手动下载PyWikipediaBot Nightlies：<a class="reference external" href="http://toolserver.org/~pywikipedia/nightly">http://toolserver.org/~pywikipedia/nightly/</a></p>
+<p>手动下载PyWikipediaBot Nightlies：<a class="reference external" href="http://toolserver.org/~pywikipedia/nightly/">http://toolserver.org/~pywikipedia/nightly/</a></p>
 <p>随便选一个：<a class="reference external" href="http://toolserver.org/~pywikipedia/nightly/package/pywikipedia/pywikipedia-nightly.7z">http://toolserver.org/~pywikipedia/nightly/package/pywikipedia/pywikipedia-nightly.7z</a></p>
-<p>TortoiseSVN：<a class="reference external" href="http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia">http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/</a></p>
+<p>TortoiseSVN：<a class="reference external" href="http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/">http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/</a></p>
 <ol class="arabic simple" start="2">
 <li>设置快捷键。</li>
 </ol>
@@ -186,6 +191,7 @@
  
  
 
+        </div>
         <div class="postmeta">
         <div class="author">
             <span>Posted by Shichao An</span>
@@ -228,7 +234,7 @@
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
-    <h1>Search</h1>
+    <h1><a href="#searchbox">Search</a></h1>
     <form action="search.html" method="get">
         <input type="text" name="q" />
         <button type="submit"><span class="fa fa-search"></span></button>
