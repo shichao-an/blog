@@ -69,6 +69,43 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>November 17, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a></h1>
+<p>The <a class="reference internal" href="2013/11/10/wake_suspend_machines_local_ethernet.html"><em>previous post</em></a> discusses remote suspend (sleep) and wakeup of machines on Ethernet LAN using pm-utils, GNU Screen and Wake-on-LAN (LAN). This post will discuss the synchronization of such behaviors of local and remote machines.</p>
+<p>Suppose you are regularly working at home on a Mac (either MacBook or Mac mini or something else), and you have a spare PC running as an alternative to NAS or workstation on the same Ethernet LAN. If the spare PC is Linux, you may have set up netatalk on it to enable AFP file sharing or use it as a Time Capsule. However, since it is probably a netbook and may work only when your Mac is up, you don’t want it to run all days without doing anything. You can thus synchronize sleep and wakeup of your Mac with that PC.</p>
+<p>You can download and install SleepWatcher to monitor sleep and wakeup on Mac and write some scripts upon these events.</p>
+<ol class="arabic">
+<li><p class="first">Download <a class="reference external" href="http://www.bernhard-baehr.de/sleepwatcher_2.2.tgz">SleepWatcher</a> (version 2.2 as of writing)</p>
+</li>
+<li><p class="first">Install it following the ReadMe.rtf instructions</p>
+</li>
+<li><p class="first">After the SleepWatcher LaunchAgent or LaunchDaemon is loaded, run the following commands to add sleep and wakeup scripts:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ echo "/path/to/your/sleep_script.sh" &gt; ~/.sleep
+$ echo "sleep 5; /path/to/your/wakeup_script.sh" &gt; ~/.wakeup
+$ chmod +x ~/.sleep ~/.wakeup
+</pre></div>
+</div>
+</li>
+</ol>
+<p><span class="docutils literal"><span class="pre">/path/to/your/sleep_script.sh</span></span> and <span class="docutils literal"><span class="pre">/path/to/your/wakeup_script.sh</span></span> are scripts to suspend and wakeup the remote machine (reference the previous post). <span class="docutils literal"><span class="pre">sleep</span> <span class="pre">5</span></span> performs a delay to make sure the network is up to avoid “send : No route to host” error.
+4. Test the setup by sleeping and waking up your Mac and check whether the remote machine does the same</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/os_x.html">OS X</a>, <a href="tags/network.html">Network</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2013/11/17/sync_sleep_wakeup_ethernet_lan.html#disqus_thread" data-disqus-identifier="2013/11/17/sync_sleep_wakeup_ethernet_lan">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>November 10, 2013</span>
         </div>
         <div class="section">
@@ -652,30 +689,6 @@
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2013/07/13/evaluation_criteria_of_computer_science_professional.html#disqus_thread" data-disqus-identifier="2013/07/13/evaluation_criteria_of_computer_science_professional">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>July 11, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/07/11/get_inode_birth_time_os_x_and_bsd.html">Get the inode birth time (crtime or btime) of a file on Mac OS X and BSD descendants</a></h1>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ stat -f "%SB %N" filename.txt</span>
-<span class="go">Jul 11 22:27:33 2013 filename.txt</span>
-</pre></div>
-</div>
-<p>According to the man page, <span class="docutils literal"><span class="pre">-f</span></span> is used to display information using the specified format. <span class="docutils literal"><span class="pre">S</span></span> is an optional output format specifier that represents a string output, and <span class="docutils literal"><span class="pre">B</span></span> is a required field specifier that represent the birth time of the inode. <span class="docutils literal"><span class="pre">N</span></span> represents the file name.</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/os_x.html">OS X</a>, <a href="tags/bsd.html">BSD</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2013/07/11/get_inode_birth_time_os_x_and_bsd.html#disqus_thread" data-disqus-identifier="2013/07/11/get_inode_birth_time_os_x_and_bsd">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -684,6 +697,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
+        </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
@@ -701,8 +716,6 @@
             <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
         </li><li>
             <a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a>
-        </li><li>
-            <a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -734,8 +747,9 @@
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 16pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 16pt">Python</a>&nbsp;&nbsp;

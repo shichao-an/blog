@@ -69,6 +69,33 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>November 13, 2011</span>
+        </div>
+        <div class="section">
+            <h1><a href="2011/11/13/python_regex_matching.html">Python正则表达式转义匹配</a></h1>
+<p>由于学校的某个学生社团管理机构总是 DT 地不断更改并发布社团的分类和编号的版本，致使 wiki 站上的资料无法保证其内容的最新状态。今天，实在看不下去了，决定更新这80个社团的资料。</p>
+<p>前几天已经利用空闲做好了新版社团分类的 wiki 表格文本（那个机构在其网站上连文字都懒得发布，直接发布的文档截图，害的我敲了100多行 wiki markup），今天提交到 MediaWiki 中。然后，还需要更新社团条目的导航模板，就必须将 wiki markup 中的社团名称外带其“[[ ]]”标记一起取出。手动取出的话需要选择-复制-粘贴80多次，并且还要做很多后续处理工作。于是决定写 python 用正则来处理。</p>
+<p>使用 re.compile 和 findall 已经匹配出了类似于这样的内容：</p>
+<div class="highlight-text"><div class="highlight"><pre>|A1001||[[北京科技大学电子竞技协会|电子竞技协会]]||
+</pre></div>
+</div>
+<p>想在进行二次findall出“[[北京科技大学电子竞技协会|电子竞技协会]]”时，发现对“[”转义出现了问题。于是，上网查资料，发现了一篇文章 <a class="reference external" href="http://bbs.scmroad.com/viewthread.php?tid=21963">http://bbs.scmroad.com/viewthread.php?tid=21963</a> 。</p>
+<p>明白了用法之后，使用“[[^]]+]]”进行匹配，成功findall “[[北京科技大学电子竞技协会|电子竞技协会]]”。然后 join 成字符串，print后提交至编辑页面之中。</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/python.html">Python</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2011/11/13/python_regex_matching.html#disqus_thread" data-disqus-identifier="2011/11/13/python_regex_matching">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>October 18, 2011</span>
         </div>
         <div class="section">
@@ -212,6 +239,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
+        </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
@@ -229,8 +258,6 @@
             <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
         </li><li>
             <a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a>
-        </li><li>
-            <a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -262,8 +289,9 @@
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 16pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 16pt">Python</a>&nbsp;&nbsp;

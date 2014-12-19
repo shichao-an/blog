@@ -5,8 +5,82 @@
         <link>http://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Wed, 01 Oct 2014 00:00:00 -0700</pubDate>
+        <pubDate>Thu, 18 Dec 2014 00:00:00 -0800</pubDate>
         
+        <item>
+            <link>http://blog.shichao.io/2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html</link>
+            <guid>http://blog.shichao.io/2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html</guid>
+            <title><![CDATA[Serving local filesystem using nginx on OS X]]></title>
+            <description><![CDATA[<h1>Serving local filesystem using nginx on OS X</h1>
+<p>Sometimes you may want to access certain files on one computer from other LAN clients using web browsers, for example, a directory of PDF files, or some MP4/MOV videos that can be easily streamed through <a class="reference external" href="http://www.w3schools.com/html/html5_video.asp">HTML5 Video</a>.</p>
+<p>To make things easy, we can set up an nginx server with <a class="reference external" href="https://github.com/aperezdc/ngx-fancyindex">Nginx Fancy Index module</a> to serve certain directories on one or more filesystems on your OS X system.</p>
+<p>We can install all required software using homebrew and we need to do some hacks on the forumla. The following setup were tested on OS X 10.10.</p>
+<p>First, tap <a class="reference external" href="https://github.com/Homebrew/homebrew-nginx">homebrew-nginx</a>:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew tap homebrew/nginx</span>
+</pre></div>
+</div>
+<p>As of writing, the version of fancyindex-nginx-module provided by this formula is 0.3.2, but we need 0.3.3 which <a class="reference external" href="http://wiki.nginx.org/NgxFancyIndex">allows sorting elements by name (default), modification time</a>. So we need to edit the formula file:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ vim /usr/local/Library/Taps/homebrew/homebrew-nginx/Formula/fancyindex-nginx-module.rb</span>
+</pre></div>
+</div>
+<p>and change <span class="docutils literal"><span class="pre">https://github.com/aperezdc/ngx-fancyindex/archive/v0.3.2.tar.gz</span></span> into <span class="docutils literal"><span class="pre">https://github.com/aperezdc/ngx-fancyindex/archive/v0.3.3.tar.gz</span></span>.</p>
+<p>Then, install nginx by building with the Fancy Index Module:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install nginx-full --with-fancyindex-module</span>
+</pre></div>
+</div>
+<p>Download <a class="reference external" href="https://github.com/TheInsomniac/Nginx-Fancyindex-Theme">FancyIndex Theme</a> to <span class="docutils literal"><span class="pre">/usr/local/etc/nginx/fancyindex</span></span>:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ git clone https://github.com/TheInsomniac/Nginx-Fancyindex-Theme.git /usr/local/etc/nginx/fancyindex</span>
+</pre></div>
+</div>
+<p>All that remains to be done is configuration. Assume you want to serve <span class="docutils literal"><span class="pre">/path/to/movies</span></span> and <span class="docutils literal"><span class="pre">/another/path/to/pdf</span></span> directories, you can use alias <span class="docutils literal"><span class="pre">movies</span></span> and <span class="docutils literal"><span class="pre">pdf</span></span> to point to these locations. Edit <span class="docutils literal"><span class="pre">/usr/local/etc/nginx/nginx.conf</span></span> and modify the <span class="docutils literal"><span class="pre">server</span></span> block under <span class="docutils literal"><span class="pre">http</span></span> block:</p>
+<div class="highlight-nginx"><div class="highlight"><pre><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>       <span class="mi">8080</span><span class="p">;</span>
+    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
+
+    <span class="kn">fancyindex</span> <span class="no">on</span><span class="p">;</span>
+    <span class="kn">fancyindex_exact_size</span> <span class="no">off</span><span class="p">;</span>
+    <span class="kn">fancyindex_localtime</span> <span class="no">on</span><span class="p">;</span>
+    <span class="kn">fancyindex_header</span> <span class="s">"/fancyindex/header.html"</span><span class="p">;</span>
+    <span class="kn">fancyindex_footer</span> <span class="s">"/fancyindex/footer.html"</span><span class="p">;</span>
+    <span class="kn">fancyindex_ignore</span> <span class="s">"fancyindex"</span><span class="p">;</span>
+
+    <span class="kn">location</span> <span class="s">/movies</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/path/to/movies/</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kn">location</span> <span class="s">/pdf</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/another/path/to/pdf/</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kn">location</span> <span class="s">/fancyindex/</span> <span class="p">{</span>
+        <span class="kn">alias</span> <span class="s">/usr/local/etc/nginx/fancyindex/</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The config above is just a minimum configuration. You may add extra configurations (e.g. <span class="docutils literal"><span class="pre">error_log</span></span>, <span class="docutils literal"><span class="pre">error_page</span></span>) according to your need. Note the paths for the <span class="docutils literal"><span class="pre">alias</span></span> directives, there must be trailing slashes, such as <span class="docutils literal"><span class="pre">alias</span> <span class="pre">/path/to/movies/</span></span>.</p>
+<p>Start nginx:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ nginx</span>
+</pre></div>
+</div>
+<p>If you make any changes to the <span class="docutils literal"><span class="pre">nginx.conf</span></span>, remember to reload:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ nginx -s reload</span>
+</pre></div>
+</div>
+<p>You can check whether the port 8080 is in the LISTEN state:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo netstat -anf inet -p tcp | grep LISTEN</span>
+</pre></div>
+</div>
+<p>Finally, if you want to keep your firewall on and nginx trusted, run the following command:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ /usr/libexec/ApplicationFirewall/socketfilterfw --add $(readlink -f /usr/local/bin/nginx)</span>
+</pre></div>
+</div>
+<p>You can test from local <a class="reference external" href="http://127.0.0.1:8080/movies">http://127.0.0.1:8080/movies</a> as well as <a class="reference external" href="http://youripaddress:8080/movies">http://youripaddress:8080/movies</a> and <a class="reference external" href="http://youripaddress:8080/pdf">http://youripaddress:8080/pdf</a> from a browser on your LAN clients.</p>
+<p><a class="reference internal" href="http://blog.shichao.io/_images/nginx-fancyindex.png"><img alt="s1" src="http://blog.shichao.io/_images/nginx-fancyindex.png" style="width: 450px;"/></a></p>
+]]></description>
+             <pubDate>Thu, 18 Dec 2014 00:00:00 -0800</pubDate>
+        </item>
+    
         <item>
             <link>http://blog.shichao.io/2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html</link>
             <guid>http://blog.shichao.io/2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html</guid>
@@ -32,7 +106,7 @@
 </div>
 <p>Then, put the following lines somewhere in your <span class="docutils literal"><span class="pre">~/.bash_profile</span></span>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c"># pyenv</span>
-<span class="nb">eval</span> <span class="s2">"$(pyenv init -)"</span>
+<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
 <span class="c"># virtualenvwrapper</span>
 <span class="nb">export </span><span class="nv">WORKON_HOME</span><span class="o">=</span>~/envs
 </pre></div>
@@ -374,33 +448,6 @@
 </div>
 ]]></description>
              <pubDate>Thu, 16 Jan 2014 00:00:00 -0800</pubDate>
-        </item>
-    
-        <item>
-            <link>http://blog.shichao.io/2013/11/17/sync_sleep_wakeup_ethernet_lan.html</link>
-            <guid>http://blog.shichao.io/2013/11/17/sync_sleep_wakeup_ethernet_lan.html</guid>
-            <title><![CDATA[Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher]]></title>
-            <description><![CDATA[<h1>Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</h1>
-<p>The <a class="reference internal" href="http://blog.shichao.io/2013/11/10/wake_suspend_machines_local_ethernet.html"><em>previous post</em></a> discusses remote suspend (sleep) and wakeup of machines on Ethernet LAN using pm-utils, GNU Screen and Wake-on-LAN (LAN). This post will discuss the synchronization of such behaviors of local and remote machines.</p>
-<p>Suppose you are regularly working at home on a Mac (either MacBook or Mac mini or something else), and you have a spare PC running as an alternative to NAS or workstation on the same Ethernet LAN. If the spare PC is Linux, you may have set up netatalk on it to enable AFP file sharing or use it as a Time Capsule. However, since it is probably a netbook and may work only when your Mac is up, you don’t want it to run all days without doing anything. You can thus synchronize sleep and wakeup of your Mac with that PC.</p>
-<p>You can download and install SleepWatcher to monitor sleep and wakeup on Mac and write some scripts upon these events.</p>
-<ol class="arabic">
-<li><p class="first">Download <a class="reference external" href="http://www.bernhard-baehr.de/sleepwatcher_2.2.tgz">SleepWatcher</a> (version 2.2 as of writing)</p>
-</li>
-<li><p class="first">Install it following the ReadMe.rtf instructions</p>
-</li>
-<li><p class="first">After the SleepWatcher LaunchAgent or LaunchDaemon is loaded, run the following commands to add sleep and wakeup scripts:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ echo "/path/to/your/sleep_script.sh" &gt; ~/.sleep
-$ echo "sleep 5; /path/to/your/wakeup_script.sh" &gt; ~/.wakeup
-$ chmod +x ~/.sleep ~/.wakeup
-</pre></div>
-</div>
-</li>
-</ol>
-<p><span class="docutils literal"><span class="pre">/path/to/your/sleep_script.sh</span></span> and <span class="docutils literal"><span class="pre">/path/to/your/wakeup_script.sh</span></span> are scripts to suspend and wakeup the remote machine (reference the previous post). <span class="docutils literal"><span class="pre">sleep</span> <span class="pre">5</span></span> performs a delay to make sure the network is up to avoid “send : No route to host” error.
-4. Test the setup by sleeping and waking up your Mac and check whether the remote machine does the same</p>
-]]></description>
-             <pubDate>Sun, 17 Nov 2013 00:00:00 -0800</pubDate>
         </item>
     
     </channel>

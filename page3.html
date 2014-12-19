@@ -69,6 +69,30 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>July 11, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/07/11/get_inode_birth_time_os_x_and_bsd.html">Get the inode birth time (crtime or btime) of a file on Mac OS X and BSD descendants</a></h1>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ stat -f "%SB %N" filename.txt</span>
+<span class="go">Jul 11 22:27:33 2013 filename.txt</span>
+</pre></div>
+</div>
+<p>According to the man page, <span class="docutils literal"><span class="pre">-f</span></span> is used to display information using the specified format. <span class="docutils literal"><span class="pre">S</span></span> is an optional output format specifier that represents a string output, and <span class="docutils literal"><span class="pre">B</span></span> is a required field specifier that represent the birth time of the inode. <span class="docutils literal"><span class="pre">N</span></span> represents the file name.</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/os_x.html">OS X</a>, <a href="tags/bsd.html">BSD</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2013/07/11/get_inode_birth_time_os_x_and_bsd.html#disqus_thread" data-disqus-identifier="2013/07/11/get_inode_birth_time_os_x_and_bsd">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>July 02, 2013</span>
         </div>
         <div class="section">
@@ -478,7 +502,7 @@ set envelope_from=yes
 </pre></div>
 </div>
 <p>GsonTest.java</p>
-<div class="highlight-java"><div class="highlight"><pre><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">gson</span><span class="o">.</span><span class="na">test</span><span class="o">;</span>
+<div class="highlight-java"><div class="highlight"><pre><span class="kn">package</span> <span class="nn">com.gson.test</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.gson.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.apache.commons.io.FileUtils</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
@@ -672,42 +696,6 @@ set envelope_from=yes
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2012/12/25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one.html#disqus_thread" data-disqus-identifier="2012/12/25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>December 23, 2012</span>
-        </div>
-        <div class="section">
-            <h1><a href="2012/12/23/dual_boot_ubuntu_and_fedora_on_laptop.html">Dual boot Ubuntu and Fedora on laptop</a></h1>
-<p>Install Ubuntu 12.10 first and then Fedora 17 on the laptop using USB media.</p>
-<ol class="arabic">
-<li><p class="first">Install Ubuntu 12.10 with some free space unallocated</p>
-</li>
-<li><p class="first">Install Fedora 17 in a new partition in the free space</p>
-</li>
-<li><p class="first">Restart and boot Ubuntu, install lvm for Fedora and update grub:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo apt-get install lvm2</span>
-<span class="go">$ sudo mount /dev/sdaN /mnt</span>
-<span class="go">$ sudo update-grub</span>
-</pre></div>
-</div>
-<p>(/dev/sdaN is the partition for Fedora for the only mount point /)</p>
-</li>
-<li><p class="first">Reboot</p>
-</li>
-</ol>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/ubuntu.html">Ubuntu</a>, <a href="tags/fedora.html">Fedora</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2012/12/23/dual_boot_ubuntu_and_fedora_on_laptop.html#disqus_thread" data-disqus-identifier="2012/12/23/dual_boot_ubuntu_and_fedora_on_laptop">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -716,6 +704,8 @@ set envelope_from=yes
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
+        </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
@@ -733,8 +723,6 @@ set envelope_from=yes
             <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
         </li><li>
             <a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a>
-        </li><li>
-            <a href="2013/11/17/sync_sleep_wakeup_ethernet_lan.html">Synchronize sleep and wakeup of machines on Ethernet LAN from Mac using SleepWatcher</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -766,8 +754,9 @@ set envelope_from=yes
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 16pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 16pt">Python</a>&nbsp;&nbsp;
