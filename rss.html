@@ -72,7 +72,7 @@
 </pre></div>
 </div>
 <p>Finally, if you want to keep your firewall on and nginx trusted, run the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ /usr/libexec/ApplicationFirewall/socketfilterfw --add $(readlink -f /usr/local/bin/nginx)</span>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add $(readlink -f /usr/local/bin/nginx)</span>
 </pre></div>
 </div>
 <p>You can test from local <a class="reference external" href="http://127.0.0.1:8080/movies">http://127.0.0.1:8080/movies</a> as well as <a class="reference external" href="http://youripaddress:8080/movies">http://youripaddress:8080/movies</a> and <a class="reference external" href="http://youripaddress:8080/pdf">http://youripaddress:8080/pdf</a> from a browser on your LAN clients.</p>
