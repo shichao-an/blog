@@ -69,6 +69,44 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>December 25, 2012</span>
+        </div>
+        <div class="section">
+            <h1><a href="2012/12/25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one.html">Adjust brightness in Kubuntu 12.10 on Acer Aspire One</a></h1>
+<p>Fn-Left and Fn-Right do not work to change brightness.</p>
+<p>Find the answer here: <a class="reference external" href="http://askubuntu.com/questions/112050/acer-aspire-one-d270-can-not-set-brightness">http://askubuntu.com/questions/112050/acer-aspire-one-d270-can-not-set-brightness</a></p>
+<p>Modify grub config file:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo vi /etc/default/grub</span>
+</pre></div>
+</div>
+<p>Change the line:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">GRUB_CMDLINE_LINUX=""</span>
+</pre></div>
+</div>
+<p>into:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">GRUB_CMDLINE_LINUX="acpi_osi=Linux"</span>
+</pre></div>
+</div>
+<p>Then, update grub:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo update-grub</span>
+</pre></div>
+</div>
+<p>Reboot</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/ubuntu.html">Ubuntu</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2012/12/25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one.html#disqus_thread" data-disqus-identifier="2012/12/25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>December 23, 2012</span>
         </div>
         <div class="section">
@@ -382,45 +420,6 @@
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2012/07/31/recommended_vpn_providers_in_china.html#disqus_thread" data-disqus-identifier="2012/07/31/recommended_vpn_providers_in_china">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>April 30, 2012</span>
-        </div>
-        <div class="section">
-            <h1><a href="2012/04/30/count_lines_of_code_with_cloc.html">代码行统计工具 CLOC</a></h1>
-<p>Count Lines of Code (CLOC): <a class="reference external" href="http://cloc.sourceforge.net/">http://cloc.sourceforge.net/</a></p>
-<p>下载 Perl 脚本 cloc-1.56.pl 即可使用。</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ perl cloc-1.56.pl /var/local/pywikipedia/</span>
-<span class="go">     290 text files.</span>
-<span class="go">     273 unique files.</span>
-<span class="go">      42 files ignored.</span>
-
-<span class="go">http://cloc.sourceforge.net v 1.56  T=2.0 s (124.5 files/s, 50462.5 lines/s)</span>
-<span class="go">--------------------------------------------------------------------------------</span>
-<span class="go">Language                      files          blank        comment           code</span>
-<span class="go">--------------------------------------------------------------------------------</span>
-<span class="go">Python                          245           9139          18658          72906</span>
-<span class="go">XML                               2             16              0            194</span>
-<span class="go">Bourne Again Shell                1              0              5              6</span>
-<span class="go">Bourne Shell                      1              0              0              1</span>
-<span class="go">--------------------------------------------------------------------------------</span>
-<span class="go">SUM:                            249           9155          18663          73107</span>
-<span class="go">--------------------------------------------------------------------------------</span>
-</pre></div>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/linux.html">Linux</a>, <a href="tags/perl.html">Perl</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2012/04/30/count_lines_of_code_with_cloc.html#disqus_thread" data-disqus-identifier="2012/04/30/count_lines_of_code_with_cloc">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -429,6 +428,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
+        </li><li>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
@@ -446,8 +447,6 @@
             <a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a>
         </li><li>
             <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
-        </li><li>
-            <a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">

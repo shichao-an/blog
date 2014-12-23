@@ -69,6 +69,54 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>January 16, 2014</span>
+        </div>
+        <div class="section">
+            <h1><a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a></h1>
+<p>Artistic Style is a “Free, Fast and Small Automatic Formatter for C, C++, C++/CLI, C#, and Java Source Code”. It is basically a utility that reformats source code in a conventionally-defined indent and coding style.</p>
+<p>First, install the program.</p>
+<p>On Ubuntu/Debian:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo apt-get install astyle</span>
+</pre></div>
+</div>
+<p>On OS X (with Homebrew):</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install astyle</span>
+</pre></div>
+</div>
+<p>In order to use the command in a simple manner, you can set options in the options file <cite>~/.astylerc</cite>. I use the following options that uses Kernighan &amp; Ritchie (K&amp;R) style. For more supported styles and options, see <a class="reference external" href="http://astyle.sourceforge.net/astyle.html">http://astyle.sourceforge.net/astyle.html</a>.</p>
+<div class="highlight-text"><div class="highlight"><pre>--style=kr
+--indent=spaces=4
+--indent-preprocessor
+--pad-oper
+--pad-header
+--max-instatement-indent=40
+--align-pointer=name
+--align-reference=name
+--keep-one-line-statements
+--convert-tabs
+--max-code-length=79
+--pad-method-colon=none
+</pre></div>
+</div>
+<p>Open vim, gVim or MacVim, and after editing some C/C++ files, use the following command to reformat the source code:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">:%!astyle</span>
+</pre></div>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/linux.html">Linux</a>, <a href="tags/vim.html">Vim</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2014/01/16/artistic_style_vim.html#disqus_thread" data-disqus-identifier="2014/01/16/artistic_style_vim">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>November 17, 2013</span>
         </div>
         <div class="section">
@@ -629,66 +677,6 @@ $ chmod +x ~/.sleep ~/.wakeup
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2013/07/20/configure_vsftpd_ftp_server_in_active_mode_on_centos.html#disqus_thread" data-disqus-identifier="2013/07/20/configure_vsftpd_ftp_server_in_active_mode_on_centos">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>July 13, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/07/13/evaluation_criteria_of_computer_science_professional.html">Evaluation criteria of computer science professionals</a></h1>
-<p>Personal point of view on how to evaluate the generic skills possessed by a computer software professional from a pragmatic perspective without considering specific subdisciplines or academic background in computer science.</p>
-<ul class="simple">
-<li>Programming Language<ul>
-<li>Low-level: C/C++</li>
-<li>Object-Oriented: Java/C++/PHP/Python/Ruby</li>
-<li>Functional/Scripting: Lisp/Python/Perl/Haskell/Erlang</li>
-<li>Web/Mobile: HTML/CSS/JavaScript</li>
-</ul>
-</li>
-<li>System and Network<ul>
-<li>System Administration (Unix)</li>
-<li>OS/Kernel concept: Process, Memory, I/O</li>
-<li>TCP/IP</li>
-<li>Basic Scripting: bash/ksh/tcsh/zsh/Perl/Python</li>
-</ul>
-</li>
-<li>Quantitative<ul>
-<li>(Discrete) Math</li>
-<li>Data Structures and Algorithms</li>
-</ul>
-</li>
-<li>Software/Architecture/Engineering<ul>
-<li>Design Pattern</li>
-<li>Paradigm: Object-Oriented, Imperative</li>
-<li>Purpose:</li>
-<li>Low-level: kernel/driver/system/network</li>
-<li>Architecture: HPC/HA/Cloud/Cluster/Distributed/Grid</li>
-<li>Internet: Web/Mobile</li>
-<li>Others: Architecture, Testing, SCM (SVN/Git)</li>
-</ul>
-</li>
-<li>Database<ul>
-<li>SQL/NoSQL/Cache</li>
-<li>DBMS: MySQL/PostgreSQL/Oracle/MongoDB/…</li>
-</ul>
-</li>
-<li>Conceptions<ul>
-<li>Computer Architecture and Hardware</li>
-</ul>
-</li>
-</ul>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/computer_science.html">Computer Science</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2013/07/13/evaluation_criteria_of_computer_science_professional.html#disqus_thread" data-disqus-identifier="2013/07/13/evaluation_criteria_of_computer_science_professional">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -697,6 +685,8 @@ $ chmod +x ~/.sleep ~/.wakeup
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
+        </li><li>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
@@ -714,8 +704,6 @@ $ chmod +x ~/.sleep ~/.wakeup
             <a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a>
         </li><li>
             <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
-        </li><li>
-            <a href="2014/01/16/artistic_style_vim.html">Use Artistic Style with vim</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
