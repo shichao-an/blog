@@ -130,104 +130,15 @@ First, we reset and stop each node:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># service rabbitmq start</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="check-status">
-<h2>Check status</h2>
-<p>Until then, the nodes should be up and running. Check whether the cluster has been successfully created:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># rabbitmqctl cluster_status</span>
-</pre></div>
-</div>
-<p>You should get the following result:</p>
-<div class="highlight-text"><div class="highlight"><pre>Cluster status of node 'rabbit@mq-node1' ...
-[{nodes,[{disc,['rabbit@mq-node1','rabbit@mq-node2',
-                'rabbit@mq-node3']}]},
- {running_nodes,['rabbit@mq-node3','rabbit@mq-node2',
-                 'rabbit@mq-node1']},
- {partitions,[]}]
-...done.
-</pre></div>
-</div>
-<p>If you don’t get this result, you may have to troubleshoot by checking logs at (<span class="docutils literal"><span class="pre">/var/log/rabbitmq</span></span>) inspecting each of the previous steps, and reset and start again.</p>
-</div>
-<div class="section" id="setup-high-availability-mirrored-queues">
-<h2>Setup high availability (mirrored queues)</h2>
-<p>Now it’s time to setup mirrored queues. Run the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># rabbitmqctl set_policy ha-all ".*" '{"ha-mode":"all"}'</span>
-</pre></div>
-</div>
-<p>Then, you can check policies:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># rabbitmqctl list_policies</span>
-<span class="go"># rabbitmqctl list_queues name policy</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="enable-plugins">
-<h2>Enable plugins</h2>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># rabbitmq-plugins enable amqp_client</span>
-<span class="go"># rabbitmq-plugins enable mochiweb</span>
-<span class="go"># rabbitmq-plugins enable rabbitmq_management</span>
-<span class="go"># rabbitmq-plugins enable rabbitmq_management_agent</span>
-<span class="go"># rabbitmq-plugins enable webmachine</span>
-<span class="go"># rabbitmq-plugins enable rabbitmq_web_dispatch</span>
-<span class="go"># service rabbitmq-server restart</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="enable-rabbitmqadmin">
-<h2>Enable rabbitmqadmin</h2>
-<p><a class="reference external" href="https://www.rabbitmq.com/management-cli.html">rabbitmqadmin</a> is an administration command for user and queue management. After rabbitmq_management plugin is enabled, it is present on the server. You can find it and create a symbolic link to it.</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># updatedb</span>
-<span class="go"># locate rabbitmqadmin</span>
-<span class="go"># ln -s $(locate rabbitmqadmin) /usr/sbin/rabbitmqadmin</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="user-management">
-<h2>User management</h2>
-<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Add privileged user</span>
-rabbitmqctl add_user <span class="s1">'root'</span> <span class="s1">'your_password'</span>
-rabbitmqctl set_user_tags root administrator
-rabbitmqctl set_permissions root <span class="s2">".*"</span> <span class="s2">".*"</span> <span class="s2">".*"</span>
-<span class="c"># mq-read</span>
-rabbitmqctl add_user <span class="s1">'mq-read'</span> <span class="s1">'your_password'</span>
-rabbitmqctl set_user_tags mq-read administrator
-rabbitmqctl set_permissions mq-read <span class="s1">'^$'</span> <span class="s1">'^$'</span> <span class="s2">".*"</span>
-<span class="c"># worker</span>
-rabbitmqctl add_user worker <span class="s1">'your_password'</span>
-rabbitmqctl add_vhost /
-rabbitmqctl set_permissions -p / worker <span class="s2">".*"</span> <span class="s2">".*"</span> <span class="s2">".*"</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="purge-queues">
-<h2>Purge queues</h2>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># rabbitmqadmin -u root -p 'your_password' purge queue name=QUEUE_NAME</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="useful-rabbitmqctl-commands">
-<h2>Useful rabbitmqctl commands</h2>
-<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Check queues</span>
-rabbitmqctl list_queues
-
-<span class="c"># Check master node</span>
-rabbitmqctl list_queues pid
-
-<span class="c"># Check slaves</span>
-rabbitmqctl list_queues slave_pids
-rabbitmqctl list_queues synchronised_slave_pids
-</pre></div>
-</div>
-</div>
-<div class="section" id="references">
-<h2>References</h2>
-<ul class="simple">
-<li><a class="reference external" href="http://www.rabbitmq.com/clustering.html">http://www.rabbitmq.com/clustering.html</a></li>
-<li><a class="reference external" href="http://www.rabbitmq.com/ha.html">http://www.rabbitmq.com/ha.html</a></li>
-<li><a class="reference external" href="https://www.rabbitmq.com/management-cli.html">https://www.rabbitmq.com/management-cli.html</a></li>
-<li><a class="reference external" href="http://www.rabbitmq.com/man/rabbitmqctl.1.man.html">http://www.rabbitmq.com/man/rabbitmqctl.1.man.html</a></li>
-</ul>
-</div>
+<p class="readmorewrapper"><a class="readmore" href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html#more">Read more...</a></p></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
         </div>
         <div class="postmeta">
