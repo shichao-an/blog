@@ -174,6 +174,7 @@ First, we reset and stop each node:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install nginx-full --with-fancyindex-module</span>
 </pre></div>
 </div>
+<p>If brew complains about SHA1 error, then you have to modify the <span class="docutils literal"><span class="pre">sha1</span></span> value of the previous fomula to match the actual sha1 in the error output.</p>
 <p>Download <a class="reference external" href="https://github.com/TheInsomniac/Nginx-Fancyindex-Theme">FancyIndex Theme</a> to <span class="docutils literal"><span class="pre">/usr/local/etc/nginx/fancyindex</span></span>:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ git clone https://github.com/TheInsomniac/Nginx-Fancyindex-Theme.git /usr/local/etc/nginx/fancyindex</span>
 </pre></div>
@@ -218,7 +219,8 @@ First, we reset and stop each node:</p>
 </pre></div>
 </div>
 <p>Finally, if you want to keep your firewall on and nginx trusted, run the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add $(readlink -f /usr/local/bin/nginx)</span>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install coreutils</span>
+<span class="go">$ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add $(greadlink -f /usr/local/bin/nginx)</span>
 </pre></div>
 </div>
 <p>You can test from local <a class="reference external" href="http://127.0.0.1:8080/movies">http://127.0.0.1:8080/movies</a> as well as <a class="reference external" href="http://youripaddress:8080/movies">http://youripaddress:8080/movies</a> and <a class="reference external" href="http://youripaddress:8080/pdf">http://youripaddress:8080/pdf</a> from a browser on your LAN clients.</p>
