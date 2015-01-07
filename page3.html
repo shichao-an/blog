@@ -69,6 +69,62 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>July 20, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/07/20/configure_vsftpd_ftp_server_in_active_mode_on_centos.html">Configure vsftpd FTP server in active mode on CentOS</a></h1>
+<ol class="arabic">
+<li><p class="first">Install vsftpd, configure SELinux context and start the service:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install vsftpd</span>
+<span class="go"># chkconfig vsftpd on</span>
+<span class="go"># chcon -R -t public_content_t /var/ftp</span>
+<span class="go"># service vsftpd start</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">There are two ways to configure iptables to allow connections</p>
+<p>One way is using system-config-firewall, which is simple:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># system-config-firewall-tui</span>
+</pre></div>
+</div>
+<p>Choose FTP in the “Trusted Service” menu and save the configuration. <span class="docutils literal"><span class="pre">system-config-firewall</span></span> will add rule in the INPUT chain and load ip_conntrack_ftp kernel module, which can be verified using:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># lsmod | grep ftp</span>
+<span class="go">nf_conntrack_ftp       10475  0</span>
+<span class="go">nf_conntrack           65428  4 nf_conntrack_ftp,nf_conntrack_ipv6,nf_conntrack_ipv4,xt_state</span>
+</pre></div>
+</div>
+<p>Another way is do it manually:</p>
+<ol class="arabic">
+<li><p class="first">Insert the following rule somewhere before the final “reject-with icmp-host-prohibited” rule, say number 4:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># iptables -L --line-numbers</span>
+<span class="go"># iptables -I INPUT 4 -p tcp --dport 21 -m state --state NEW -j ACCEPT</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Load ip_conntrack_ftp (alias of nf_conntrack_ftp):</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># modprobe ip_conntrack_ftp</span>
+</pre></div>
+</div>
+<p>Now the FTP directory should be accessible from remote machines.</p>
+</li>
+</ol>
+</li>
+</ol>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/centos.html">CentOS</a>, <a href="tags/linux.html">Linux</a>, <a href="tags/iptables.html">iptables</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2013/07/20/configure_vsftpd_ftp_server_in_active_mode_on_centos.html#disqus_thread" data-disqus-identifier="2013/07/20/configure_vsftpd_ftp_server_in_active_mode_on_centos">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>July 13, 2013</span>
         </div>
         <div class="section">
@@ -641,83 +697,6 @@ set envelope_from=yes
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2013/01/24/gson_simple_example_of_json_serialization.html#disqus_thread" data-disqus-identifier="2013/01/24/gson_simple_example_of_json_serialization">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>January 08, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/01/08/wep_craking_experiment_on_ubuntu_12_10.html">WEP cracking experiment on Ubuntu 12.10</a></h1>
-<p>This experiment follows the online basic tutorials at <a class="reference external" href="http://www.aircrack-ng.org/">http://www.aircrack-ng.org/</a> and is done in terms of learning.</p>
-<ol class="arabic">
-<li><p class="first">Download and install <a class="reference external" href="http://www.aircrack-ng.org/">Aircrack-ng suite</a>:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo apt-get install aircrack-ng</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Start the wireless card in monitor mode, discover Access Points (AP) and determine a proper target AP:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ iwconfig</span>
-<span class="go">wlan0     IEEE 802.11bgn  ESSID:off/any</span>
-<span class="go">          Mode:Managed  Access Point: Not-Associated   Tx-Power=16 dBm</span>
-<span class="go">          Retry  long limit:7   RTS thr:off   Fragment thr:off</span>
-<span class="go">          Power Management:off</span>
-
-<span class="go">lo        no wireless extensions.</span>
-
-<span class="go">eth0      no wireless extensions.</span>
-
-<span class="go">$ sudo airmon-ng start wlan0</span>
-<span class="go">Interface   Chipset     Driver</span>
-
-<span class="go">wlan0       Atheros     ath9k - [phy0]</span>
-<span class="go">                (monitor mode enabled on mon0)</span>
-
-<span class="go">$ sudo airodump-ng mon0</span>
-</pre></div>
-</div>
-<p><a class="reference internal" href="_images/02_1-e1357703106181.png"><img alt="02_1" src="_images/02_1-e1357703106181.png" style="width: 450px;"/></a></p>
-<p>The screenshot above shows the APs on different channels. Choose a WEP target.</p>
-</li>
-<li><p class="first">Start the wireless interface with the same channel to the target AP.</p>
-<p>Assume our target AP has ESSID “TARGET-NET” and BSSID (MAC address) “C0:3F:0E:D3:XX:XX” on channel 11.</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo airmon-ng stop wlan0</span>
-<span class="go">$ sudo airmon-ng stop mon0</span>
-<span class="go">$ sudo airmon-ng start wlan0 11</span>
-<span class="go">Interface   Chipset     Driver</span>
-
-<span class="go">wlan0       Atheros     ath9k - [phy0]</span>
-<span class="go">                (monitor mode enabled on mon0)</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Test packet injection on the target AP.</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo aireplay-ng -9 -e TARGET-NET -a C0:3F:0E:D3:XX:XX mon0</span>
-<span class="go">20:38:56  Waiting for beacon frame (BSSID: C0:3F:0E:D3:XX:XX) on channel 11</span>
-<span class="go">20:38:56  Trying broadcast probe requests...</span>
-<span class="go">20:38:56  Injection is working!</span>
-<span class="go">20:38:58  Found 1 AP</span>
-
-<span class="go">20:38:58  Trying directed probe requests...</span>
-<span class="go">20:38:58  C0:3F:0E:D3:XX:XX - channel: 11 - 'TARGET-NET'</span>
-<span class="go">20:39:00  Ping (min/avg/max): 1.664ms/6.917ms/39.315ms Power: -78.96</span>
-<span class="go">20:39:00  23/30:  76%</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<p class="readmorewrapper"><a class="readmore" href="2013/01/08/wep_craking_experiment_on_ubuntu_12_10.html#more">Read more...</a></p> 
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/ubuntu.html">Ubuntu</a>, <a href="tags/linux.html">Linux</a>, <a href="tags/hacking.html">Hacking</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2013/01/08/wep_craking_experiment_on_ubuntu_12_10.html#disqus_thread" data-disqus-identifier="2013/01/08/wep_craking_experiment_on_ubuntu_12_10">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -726,6 +705,8 @@ set envelope_from=yes
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+        </li><li>
             <a href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
         </li><li>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
@@ -743,8 +724,6 @@ set envelope_from=yes
             <a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a>
         </li><li>
             <a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a>
-        </li><li>
-            <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -766,7 +745,7 @@ set envelope_from=yes
       <a href="tags/dns.html" style="font-size: 9pt">DNS</a>&nbsp;&nbsp;
       <a href="tags/eclipse.html" style="font-size: 9pt">Eclipse</a>&nbsp;&nbsp;
       <a href="tags/emacs.html" style="font-size: 8pt">Emacs</a>&nbsp;&nbsp;
-      <a href="tags/fedora.html" style="font-size: 10pt">Fedora</a>&nbsp;&nbsp;
+      <a href="tags/fedora.html" style="font-size: 11pt">Fedora</a>&nbsp;&nbsp;
       <a href="tags/gdb.html" style="font-size: 8pt">GDB</a>&nbsp;&nbsp;
       <a href="tags/hacking.html" style="font-size: 8pt">Hacking</a>&nbsp;&nbsp;
       <a href="tags/ios.html" style="font-size: 8pt">iOS</a>&nbsp;&nbsp;
@@ -781,11 +760,14 @@ set envelope_from=yes
       <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
-      <a href="tags/python.html" style="font-size: 16pt">Python</a>&nbsp;&nbsp;
+      <a href="tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;
       <a href="tags/rabbitmq.html" style="font-size: 8pt">RabbitMQ</a>&nbsp;&nbsp;
+      <a href="tags/rdp.html" style="font-size: 8pt">RDP</a>&nbsp;&nbsp;
       <a href="tags/sml.html" style="font-size: 8pt">SML</a>&nbsp;&nbsp;
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 14pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ssh.html" style="font-size: 8pt">SSH</a>&nbsp;&nbsp;
+      <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 13pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;

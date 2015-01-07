@@ -69,6 +69,69 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>January 06, 2015</span>
+        </div>
+        <div class="section">
+            <h1><a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a></h1>
+<p>Suppose you have a remote desktop but you only have SSH access and you need to connect to that desktop with GUI. For example, you have a server at home and you’ve setup port forwarding on your router so that you can SSH to your that home server from office or school, and you don’t want to expose too many ports to the Internet. You can setup xrdp server and tunnel your connection over SSH.</p>
+<p>In the following texts, the home server is Fedora 20 and the client laptop is OS X Yosemite.</p>
+<div class="section" id="install-xrdp-on-home-server">
+<h2>Install xrdp on home server</h2>
+<p>On your home server, run:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install xrdp</span>
+<span class="go"># systemctl start xrdp.service</span>
+<span class="go"># systemctl enable xrdp.service</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-firewall">
+<h2>Configure firewall</h2>
+<p>Add SSH service and open port 3389 to the current zone and make it permanent. By opening port 3389, you can connect directly to the home server without SSH when your laptop is in the same network at home.</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># firewall-cmd --add-service=ssh --permanent</span>
+<span class="go"># firewall-cmd --add-port=3389/tcp --permanent</span>
+<span class="go"># firewall-cmd --reload</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-xfreerdp-using-homebrew">
+<h2>Install xfreerdp using homebrew</h2>
+<p>Make sure you’ve installed XQuartz. You can download the dmg at <a class="reference external" href="http://xquartz.macosforge.org/landing/">http://xquartz.macosforge.org/landing/</a> .</p>
+<p>On your OS X laptop:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew update</span>
+<span class="go">$ brew install freerdp</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-ssh-forwarding">
+<h2>Start SSH forwarding</h2>
+<p>After you make sure you can SSH to your home server (say 1.1.1.1), you can start SSH forwarding. Run the following command in one terminal session:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ ssh -qnN -L 3389:127.0.0.1:3389 1.1.1.1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="connect-to-home-server-using-xfreerdp">
+<h2>Connect to home server using xfreerdp</h2>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ xfreerdp localhost</span>
+</pre></div>
+</div>
+<p>Then, you should have a X11 window show up as in the screenshot below. Enter your username and password to login to your home server.</p>
+<p><a class="reference internal" href="_images/xquartz-freerdp.png"><img alt="s1" src="_images/xquartz-freerdp.png" style="width: 450px;"/></a></p>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/fedora.html">Fedora</a>, <a href="tags/rdp.html">RDP</a>, <a href="tags/os_x.html">OS X</a>, <a href="tags/linux.html">Linux</a>, <a href="tags/ssh.html">SSH</a>, <a href="tags/tunneling.html">Tunneling</a></span>
+        </div>
+        <div class="comments">
+            <a href="http://blog.shichao.io/2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html#disqus_thread" data-disqus-identifier="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>December 22, 2014</span>
         </div>
         <div class="section">
@@ -608,48 +671,6 @@ First, we reset and stop each node:</p>
         </div>
         <div class="comments">
             <a href="http://blog.shichao.io/2014/03/17/setuid_and_uid_euid_and_suid.html#disqus_thread" data-disqus-identifier="2014/03/17/setuid_and_uid_euid_and_suid">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>March 05, 2014</span>
-        </div>
-        <div class="section">
-            <h1><a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager’s prompt to connect to WPA Enterprise wireless networks</a></h1>
-<p>This seems to be an unsolved bug (<a class="reference external" href="https://bugzilla.redhat.com/show_bug.cgi?id=982429">#982429</a>) still under discussion. Many give temporary solutions that modify the corresponding <span class="docutils literal"><span class="pre">ifcfg-*</span></span> file and specify the password, possibly in plaintext form. Some suggest encrypting the password using <span class="docutils literal"><span class="pre">wpa_passphrase</span> <span class="pre">ESSID</span></span> command. The problematic network here is “nyu” of the New York University. Every time I turned on my laptop on the campus, it prompts with a dialog (though the password is actually stored) for me to click the “Connect” button, which is annoying. However, the encryption method does not work as far as I am concerned with Fedora 20. So I just followed the plaintext way to produce a temporary fix for that::</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># cd /etc/sysconfig/network-scripts</span>
-<span class="go"># vim ifcfg-nyu</span>
-</pre></div>
-</div>
-<p>Comment or remove the following line:</p>
-<div class="highlight-ini"><div class="highlight"><pre><span class="na">IEEE_8021X_PASSWORD_FLAGS</span><span class="o">=</span><span class="s">user</span>
-</pre></div>
-</div>
-<p>Create a new file named <span class="docutils literal"><span class="pre">keys-nyu</span></span> in this directory with your password:</p>
-<div class="highlight-ini"><div class="highlight"><pre><span class="na">IEEE_8021X_PASSWORD</span><span class="o">=</span><span class="s">'your_password'</span>
-</pre></div>
-</div>
-<p>Don’t forget to make it read-writable by root only:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># chmod 600 keys-nyu</span>
-</pre></div>
-</div>
-<p>Then restart your network interface associated with “nyu”::</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># ifdown nyu</span>
-<span class="go"># ifup nyu</span>
-</pre></div>
-</div>
-<p>Then, the wireless network should work as expected. Try to logout or reboot to see if it surely works.</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/linux.html">Linux</a>, <a href="tags/fedora.html">Fedora</a></span>
-        </div>
-        <div class="comments">
-            <a href="http://blog.shichao.io/2014/03/05/suppressing_fedora.html#disqus_thread" data-disqus-identifier="2014/03/05/suppressing_fedora">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -658,6 +679,8 @@ First, we reset and stop each node:</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+        </li><li>
             <a href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
         </li><li>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
@@ -675,8 +698,6 @@ First, we reset and stop each node:</p>
             <a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a>
         </li><li>
             <a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a>
-        </li><li>
-            <a href="2014/03/05/suppressing_fedora.html">Suppressing Fedora NetworkManager's prompt to connect to WPA Enterprise wireless networks</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -698,7 +719,7 @@ First, we reset and stop each node:</p>
       <a href="tags/dns.html" style="font-size: 9pt">DNS</a>&nbsp;&nbsp;
       <a href="tags/eclipse.html" style="font-size: 9pt">Eclipse</a>&nbsp;&nbsp;
       <a href="tags/emacs.html" style="font-size: 8pt">Emacs</a>&nbsp;&nbsp;
-      <a href="tags/fedora.html" style="font-size: 10pt">Fedora</a>&nbsp;&nbsp;
+      <a href="tags/fedora.html" style="font-size: 11pt">Fedora</a>&nbsp;&nbsp;
       <a href="tags/gdb.html" style="font-size: 8pt">GDB</a>&nbsp;&nbsp;
       <a href="tags/hacking.html" style="font-size: 8pt">Hacking</a>&nbsp;&nbsp;
       <a href="tags/ios.html" style="font-size: 8pt">iOS</a>&nbsp;&nbsp;
@@ -713,11 +734,14 @@ First, we reset and stop each node:</p>
       <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
-      <a href="tags/python.html" style="font-size: 16pt">Python</a>&nbsp;&nbsp;
+      <a href="tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;
       <a href="tags/rabbitmq.html" style="font-size: 8pt">RabbitMQ</a>&nbsp;&nbsp;
+      <a href="tags/rdp.html" style="font-size: 8pt">RDP</a>&nbsp;&nbsp;
       <a href="tags/sml.html" style="font-size: 8pt">SML</a>&nbsp;&nbsp;
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 14pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ssh.html" style="font-size: 8pt">SSH</a>&nbsp;&nbsp;
+      <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 13pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;
