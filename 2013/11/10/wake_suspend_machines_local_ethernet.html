@@ -138,9 +138,9 @@
 
 
 <span class="nv">session_name</span><span class="o">=</span><span class="s2">&quot;suspend&quot;</span>
-ssh yourname@machine-a <span class="s2">&quot;if screen -list | grep -E &#39;\&lt;[0-9]+\.</span><span class="nv">$session_name</span><span class="s2">\&gt;&#39; &gt;/dev/null;</span>
-<span class="s2">then echo -n &#39;&#39;; else screen -dmS </span><span class="nv">$session_name</span><span class="s2">; fi&quot;</span>
-ssh -t yourname@machine-a <span class="s2">&quot;screen -S </span><span class="nv">$session_name</span><span class="s2"> -p 0 -X stuff &#39;sudo pm-suspend</span>
+ssh yourname@machine-a <span class="s2">&quot;if screen -list | grep -E &#39;\&lt;[0-9]+\.$session_name\&gt;&#39; &gt;/dev/null;</span>
+<span class="s2">then echo -n &#39;&#39;; else screen -dmS $session_name; fi&quot;</span>
+ssh -t yourname@machine-a <span class="s2">&quot;screen -S $session_name -p 0 -X stuff &#39;sudo pm-suspend</span>
 <span class="s2">&#39;</span>
 <span class="s2">&quot;</span>
 </pre></div>
