@@ -184,18 +184,18 @@ First, we reset and stop each node:</p>
 </div>
 <div class="section" id="user-management">
 <h2>User management</h2>
-<div class="highlight-shell"><div class="highlight"><pre># Add privileged user
-rabbitmqctl add_user &#39;root&#39; &#39;your_password&#39;
+<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Add privileged user</span>
+rabbitmqctl add_user <span class="s1">&#39;root&#39;</span> <span class="s1">&#39;your_password&#39;</span>
 rabbitmqctl set_user_tags root administrator
-rabbitmqctl set_permissions root &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
-# mq-read
-rabbitmqctl add_user &#39;mq-read&#39; &#39;your_password&#39;
+rabbitmqctl set_permissions root <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span>
+<span class="c"># mq-read</span>
+rabbitmqctl add_user <span class="s1">&#39;mq-read&#39;</span> <span class="s1">&#39;your_password&#39;</span>
 rabbitmqctl set_user_tags mq-read administrator
-rabbitmqctl set_permissions mq-read &#39;^$&#39; &#39;^$&#39; &quot;.*&quot;
-# worker
-rabbitmqctl add_user worker &#39;your_password&#39;
+rabbitmqctl set_permissions mq-read <span class="s1">&#39;^$&#39;</span> <span class="s1">&#39;^$&#39;</span> <span class="s2">&quot;.*&quot;</span>
+<span class="c"># worker</span>
+rabbitmqctl add_user worker <span class="s1">&#39;your_password&#39;</span>
 rabbitmqctl add_vhost /
-rabbitmqctl set_permissions -p / worker &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+rabbitmqctl set_permissions -p / worker <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -207,13 +207,13 @@ rabbitmqctl set_permissions -p / worker &quot;.*&quot; &quot;.*&quot; &quot;.*&q
 </div>
 <div class="section" id="useful-rabbitmqctl-commands">
 <h2>Useful rabbitmqctl commands</h2>
-<div class="highlight-shell"><div class="highlight"><pre># Check queues
+<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Check queues</span>
 rabbitmqctl list_queues
 
-# Check master node
+<span class="c"># Check master node</span>
 rabbitmqctl list_queues pid
 
-# Check slaves
+<span class="c"># Check slaves</span>
 rabbitmqctl list_queues slave_pids
 rabbitmqctl list_queues synchronised_slave_pids
 </pre></div>
