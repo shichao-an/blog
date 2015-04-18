@@ -1,0 +1,338 @@
+<!DOCTYPE html><!--[if lt IE 7]>      <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:og="http://ogp.me/ns#"
+    xmlns:fb="https://www.facebook.com/2008/fbml" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="Personal Blogging Site of Shichao An">
+        <meta name="viewport" content="width=device-width">
+        <title>Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04 &mdash; Shichao&#39;s Blog</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="stylesheet" href="../../../_static/style.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/favicon.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        
+  <link rel="next" title="Tunneling RDP over SSH with xrdp and xfreerdp" href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
+  <link rel="canonical" href="https://blog.shichao.io/2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html" /><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script><script type="text/javascript" src="../../../_static/disqus.js"></script><script type="text/javascript" src="../../../_static/google_analytics.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Scroll to content if on small screen
+            if (screen.width < 480)
+            {
+                $(document).scrollTop(document.getElementsByTagName("article")[0].offsetTop - 44);
+            }
+        });
+    </script>
+</head>
+    <body role="document">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+      <div id="container"><header role="banner">
+            <hgroup>
+              <h1><a href="../../../index.html">Shichao&#39;s Blog</a></h1><h2>Recording molecular stuff</h2></hgroup>
+          </header>
+      <nav role="navigation">
+            <ul><li class="main-nav">
+                  <a href="../../../index.html">Home</a>
+                </li>
+              <li class="main-nav">
+                  <a href="../../../pages/about.html">About</a>
+                </li>
+              </ul>
+          </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>April 17, 2015</span>
+        </div>
+    <div class="section" id="setup-openldap-server-with-openssh-lpk-on-ubuntu-14-04">
+<h1>Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</h1>
+<p>This post documents how to setup a secure OpenLDAP server that is able to make OpenLDAP client servers accept authorized SSH access requests from users.
+The following steps assume the OpenLDAP server (slapd) and phpLDAPadmin are installed as referenced in the <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps">initial setup</a>.</p>
+<div class="section" id="instructions-and-references">
+<h2>Instructions and references</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps">Initial setup</a></li>
+<li><a class="reference external" href="https://code.google.com/p/openssh-lpk/">OpenSSH-LPK</a> and <a class="reference external" href="https://github.com/jirutka/ssh-ldap-pubkey">ssh-ldap-pubkey</a> (on LDAP clients)</li>
+<li><a class="reference external" href="http://lucor.github.io/post/ubuntu-and-ldap-force-authentication-during-a-bind-request/">Force authentication</a></li>
+<li><a class="reference external" href="http://rogermoffatt.com/2011/08/24/ubuntu-openldap-with-ssltls/">Secure LDAP with SSL/TLS</a></li>
+</ul>
+</div>
+<div class="section" id="understanding-cn-config-ldap-database">
+<h2>Understanding cn=config (LDAP database)</h2>
+<p>The default installation of OpenLDAP in recent versions of Ubuntu uses the new <a class="reference external" href="https://help.ubuntu.com/community/OpenLDAPServer#Installation">runtime configuration (RTC)
+system</a> or olc (OpenLDAP Configuration). This installation uses <span class="docutils literal"><span class="pre">cn=config</span></span> (the LDAP database) for configuration rather than the old style <span class="docutils literal"><span class="pre">slapd.conf</span></span>.</p>
+</div>
+<div class="section" id="schemas">
+<h2>Schemas</h2>
+<p>The schemas can be imported dynamically into <span class="docutils literal"><span class="pre">cn=config</span></span> database, without restarting <span class="docutils literal"><span class="pre">slapd</span></span>. The schemas to be imported can placed in
+<span class="docutils literal"><span class="pre">/etc/ldap/schema</span></span>.</p>
+<p>The following schema in ldif format will be used and discussed in the subsequent sections:</p>
+<ul class="simple">
+<li><span class="docutils literal"><span class="pre">openssh-lpk.ldif</span></span></li>
+<li><span class="docutils literal"><span class="pre">ldap_disable_bind_anon.ldif</span></span></li>
+<li><span class="docutils literal"><span class="pre">ssl.ldif</span></span></li>
+</ul>
+</div>
+<div class="section" id="import-openssh-lpk-scheme">
+<h2>Import openssh-lpk scheme</h2>
+<div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f openssh-lpk.ldif
+</pre></div>
+</div>
+<p>where <span class="docutils literal"><span class="pre">openssh-lpk.ldif</span></span> is:</p>
+<div class="highlight-python"><div class="highlight"><pre>dn: cn=openssh-lpk,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: openssh-lpk
+olcAttributeTypes: ( 1.3.6.1.4.1.24552.500.1.1.1.13 NAME &#39;sshPublicKey&#39;
+  DESC &#39;MANDATORY: OpenSSH Public key&#39;
+  EQUALITY octetStringMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )
+olcObjectClasses: ( 1.3.6.1.4.1.24552.500.1.1.2.0 NAME &#39;ldapPublicKey&#39; SUP top AUXILIARY
+  DESC &#39;MANDATORY: OpenSSH LPK objectclass&#39;
+  MAY ( sshPublicKey $ uid )
+  )
+</pre></div>
+</div>
+</div>
+<div class="section" id="force-authentication">
+<h2>Force authentication</h2>
+<p>By default, OpenLDAP allows anonymous query from any client servers. You may want to enable authentication so that only authenticated clients are able to query the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f ldap_disable_bind_anon.ldif
+</pre></div>
+</div>
+<p>where <span class="docutils literal"><span class="pre">ldap_disable_bind_anon.ldif</span></span> is:</p>
+<div class="highlight-python"><div class="highlight"><pre>dn: cn=config
+changetype: modify
+add: olcDisallows
+olcDisallows: bind_anon
+
+dn: cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+</pre></div>
+</div>
+<div id="more"> </div></div>
+<div class="section" id="secure-ldap-with-tls">
+<h2>Secure LDAP with TLS</h2>
+<ul>
+<li><p class="first">Install the package that provides <span class="docutils literal"><span class="pre">certtool</span></span>:</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install gnutls-bin
+</pre></div>
+</div>
+</li>
+<li><p class="first">Generate new certificate (self-signed) and key:</p>
+<div class="highlight-python"><div class="highlight"><pre>mkdir -p /etc/ldap/gnutls
+cd  /etc/ldap/gnutls
+certtool --generate-self-signed --load-privkey ldap.gnutls.key --outfile ldap.gnutls.crt
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fix permission of private key:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">chmod</span> <span class="o">+</span><span class="n">r</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ldap</span><span class="o">/</span><span class="n">gnutls</span><span class="o">/</span><span class="n">ldap</span><span class="o">.</span><span class="n">gnutls</span><span class="o">.</span><span class="n">key</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="import-ssl-schema">
+<h2>Import SSL schema</h2>
+<div class="highlight-python"><div class="highlight"><pre>ldapmodify -Y EXTERNAL -H ldapi:/// -f ssl.ldif
+</pre></div>
+</div>
+<p>where ssl.ldif is:</p>
+<div class="highlight-python"><div class="highlight"><pre>dn: cn=config
+changetype: Modify
+add: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/ldap/gnutls/ldap.gnutls.key
+-
+add: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/ldap/gnutls/ldap.gnutls.crt
+-
+add: olcTLSCipherSuite
+olcTLSCipherSuite: NORMAL
+-
+add: olcTLSCRLCheck
+olcTLSCRLCheck: none
+-
+add: olcTLSVerifyClient
+olcTLSVerifyClient: never
+</pre></div>
+</div>
+</div>
+<div class="section" id="enable-ldaps">
+<h2>Enable LDAPS</h2>
+<p>By default, only <span class="docutils literal"><span class="pre">ldap</span></span> and <span class="docutils literal"><span class="pre">ldapi</span></span> (Unix domain socket) are enabled. Make <span class="docutils literal"><span class="pre">ldap</span></span> listen to only 127.0.0.1 and keep the latter so that you can run ldap utilty commands against <span class="docutils literal"><span class="pre">ldapi:///</span></span> without providing credentials if working on the same server.</p>
+<p>Edit <span class="docutils literal"><span class="pre">/etc/default/slapd</span></span> and ensure the following line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">SLAPD_SERVICES</span><span class="o">=</span><span class="s">&quot;ldap://127.0.0.1:389/ ldaps:/// ldapi:///&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-etc-ldap-ldap-conf">
+<h2>Configure /etc/ldap/ldap.conf</h2>
+<p>Edit <span class="docutils literal"><span class="pre">/etc/ldap/ldap.conf</span></span> and add the following line:</p>
+<div class="highlight-python"><div class="highlight"><pre>TLS_REQCERT never
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-the-above-ldaps-config">
+<h2>Test the above LDAPS config</h2>
+<div class="highlight-python"><div class="highlight"><pre>ldapsearch -d 9 -D &quot;cn=Bob,ou=users,dc=example,dc=com&quot; \
+ -w password -b &quot;dc=example,dc=com&quot; -H &quot;ldaps://ldap.example.org&quot; &quot;objectClass=*&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="customize-phpldapadmin-config-and-templates">
+<h2>Customize phpLDAPadmin config and templates</h2>
+<p>You can customize template configurations (<span class="docutils literal"><span class="pre">/etc/phpldapadmin/config.php</span></span>).</p>
+<p>For example, change the base uid and gid to a greater value:</p>
+<div class="highlight-python"><div class="highlight"><pre>$servers-&gt;setValue(&#39;auto_number&#39;,&#39;min&#39;,array(&#39;uidNumber&#39;=&gt;3000,&#39;gidNumber&#39;=&gt;3000));
+</pre></div>
+</div>
+<p>Add</p>
+<div class="highlight-python"><div class="highlight"><pre>$config-&gt;custom-&gt;appearance[&#39;theme&#39;] = &#39;tango&#39;;
+</pre></div>
+</div>
+<p>You can also customize templates for various components, for example, POSIX account:</p>
+<ul class="simple">
+<li>/etc/phpldapadmin/templates/creation/posixAccount.xml</li>
+</ul>
+<p>Customize themes and styles:</p>
+<ul class="simple">
+<li>/usr/share/phpldapadmin/lib/page.php</li>
+<li>/usr/share/phpldapadmin/htdocs/css/tango/style.css</li>
+</ul>
+</div>
+<div class="section" id="add-a-user-with-ssh-public-key-in-phpldapadmin">
+<h2>Add a user with SSH public key in phpLDAPadmin</h2>
+<p>First, create a user with the &#8220;Generic: User Account&#8221; template. Then, go to the &#8220;objectClass&#8221; attribute section, click &#8220;add value&#8221;, and choose the &#8220;ldapPublicKey&#8221; attribute. After you submit, go back to the user edit page, click &#8220;Add new attribute&#8221; on the top part, and choose &#8220;sshPublicKey&#8221;, paste the public key into the text area, and finally click &#8220;Update Object&#8221;.</p>
+<p><a class="reference internal" href="../../../_images/phpldapadmin_objectclass.png"><img alt="s1" src="../../../_images/phpldapadmin_objectclass.png" style="width: 450px;" /></a></p>
+<p><a class="reference internal" href="../../../_images/phpldapadmin_add_attr.png"><img alt="s2" src="../../../_images/phpldapadmin_add_attr.png" style="width: 450px;" /></a></p>
+</div>
+</div>
+
+    <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="../../../tags/openldap.html">OpenLDAP</a>, <a href="../../../tags/ubuntu.html">Ubuntu</a>, <a href="../../../tags/ssh.html">SSH</a></span>
+        </div>
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a> &raquo; </li>
+        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
+    <h1>Recent Posts</h1>
+    <ul><li>
+            <a href="#">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+        </li><li>
+            <a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+        </li><li>
+            <a href="../../../2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
+        </li><li>
+            <a href="../../../2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
+        </li><li>
+            <a href="../../../2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
+        </li><li>
+            <a href="../../../2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
+        </li><li>
+            <a href="../../../2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
+        </li><li>
+            <a href="../../../2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
+        </li><li>
+            <a href="../../../2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
+        </li><li>
+            <a href="../../../2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a>
+        </li></ul>
+</div>
+</section><section><div class="widget" id="searchbox" role="search">
+    <h1><a href="#searchbox">Search</a></h1>
+    <form action="../../../search.html" method="get">
+        <input type="text" name="q" />
+        <button type="submit"><span class="fa fa-search"></span></button>
+    </form>
+</div></section><section><div class="widget">
+    <h1>Tags Cloud</h1>
+      <a href="../../../tags/apache.html" style="font-size: 8pt">Apache</a>&nbsp;&nbsp;
+      <a href="../../../tags/aws.html" style="font-size: 9pt">AWS</a>&nbsp;&nbsp;
+      <a href="../../../tags/bash.html" style="font-size: 12pt">Bash</a>&nbsp;&nbsp;
+      <a href="../../../tags/bsd.html" style="font-size: 9pt">BSD</a>&nbsp;&nbsp;
+      <a href="../../../tags/c.html" style="font-size: 8pt">C</a>&nbsp;&nbsp;
+      <a href="../../../tags/centos.html" style="font-size: 9pt">CentOS</a>&nbsp;&nbsp;
+      <a href="../../../tags/computer_science.html" style="font-size: 8pt">Computer Science</a>&nbsp;&nbsp;
+      <a href="../../../tags/django.html" style="font-size: 8pt">Django</a>&nbsp;&nbsp;
+      <a href="../../../tags/dns.html" style="font-size: 9pt">DNS</a>&nbsp;&nbsp;
+      <a href="../../../tags/eclipse.html" style="font-size: 9pt">Eclipse</a>&nbsp;&nbsp;
+      <a href="../../../tags/emacs.html" style="font-size: 8pt">Emacs</a>&nbsp;&nbsp;
+      <a href="../../../tags/fedora.html" style="font-size: 11pt">Fedora</a>&nbsp;&nbsp;
+      <a href="../../../tags/gdb.html" style="font-size: 8pt">GDB</a>&nbsp;&nbsp;
+      <a href="../../../tags/hacking.html" style="font-size: 8pt">Hacking</a>&nbsp;&nbsp;
+      <a href="../../../tags/ios.html" style="font-size: 8pt">iOS</a>&nbsp;&nbsp;
+      <a href="../../../tags/iptables.html" style="font-size: 8pt">iptables</a>&nbsp;&nbsp;
+      <a href="../../../tags/java.html" style="font-size: 8pt">Java</a>&nbsp;&nbsp;
+      <a href="../../../tags/linux.html" style="font-size: 20pt">Linux</a>&nbsp;&nbsp;
+      <a href="../../../tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
+      <a href="../../../tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
+      <a href="../../../tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="../../../tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
+      <a href="../../../tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
+      <a href="../../../tags/openldap.html" style="font-size: 8pt">OpenLDAP</a>&nbsp;&nbsp;
+      <a href="../../../tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
+      <a href="../../../tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
+      <a href="../../../tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
+      <a href="../../../tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;
+      <a href="../../../tags/rabbitmq.html" style="font-size: 8pt">RabbitMQ</a>&nbsp;&nbsp;
+      <a href="../../../tags/rdp.html" style="font-size: 8pt">RDP</a>&nbsp;&nbsp;
+      <a href="../../../tags/sml.html" style="font-size: 8pt">SML</a>&nbsp;&nbsp;
+      <a href="../../../tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
+      <a href="../../../tags/ssh.html" style="font-size: 9pt">SSH</a>&nbsp;&nbsp;
+      <a href="../../../tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
+      <a href="../../../tags/ubuntu.html" style="font-size: 14pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="../../../tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
+      <a href="../../../tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
+      <a href="../../../tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;
+      <a href="../../../tags/windows.html" style="font-size: 9pt">Windows</a>
+</div></section></aside></div> <!-- #main --></div> <!-- #main-container -->
+
+        <div class="footer-container" role="contentinfo"><footer class="wrapper">&copy; Copyright 2015, Shichao An. Powered by <a href="http://www.tinkerer.me/">Tinkerer</a> and <a href="http://sphinx.pocoo.org/">Sphinx</a>.</footer></div> <!-- footer-container -->
+
+      </div> <!--! end of #container --><!--[if lt IE 7 ]>
+          <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+          <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+        <![endif]-->
+    </body>
+</html>

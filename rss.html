@@ -5,8 +5,95 @@
         <link>https://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Tue, 06 Jan 2015 00:00:00 -0800</pubDate>
+        <pubDate>Fri, 17 Apr 2015 00:00:00 -0700</pubDate>
         
+        <item>
+            <link>https://blog.shichao.io/2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html</link>
+            <guid>https://blog.shichao.io/2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html</guid>
+            <title><![CDATA[Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04]]></title>
+            <description><![CDATA[<h1>Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</h1>
+<p>This post documents how to setup a secure OpenLDAP server that is able to make OpenLDAP client servers accept authorized SSH access requests from users.
+The following steps assume the OpenLDAP server (slapd) and phpLDAPadmin are installed as referenced in the <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps">initial setup</a>.</p>
+<div class="section" id="instructions-and-references">
+<h2>Instructions and references</h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps">Initial setup</a></li>
+<li><a class="reference external" href="https://code.google.com/p/openssh-lpk/">OpenSSH-LPK</a> and <a class="reference external" href="https://github.com/jirutka/ssh-ldap-pubkey">ssh-ldap-pubkey</a> (on LDAP clients)</li>
+<li><a class="reference external" href="http://lucor.github.io/post/ubuntu-and-ldap-force-authentication-during-a-bind-request/">Force authentication</a></li>
+<li><a class="reference external" href="http://rogermoffatt.com/2011/08/24/ubuntu-openldap-with-ssltls/">Secure LDAP with SSL/TLS</a></li>
+</ul>
+</div>
+<div class="section" id="understanding-cn-config-ldap-database">
+<h2>Understanding cn=config (LDAP database)</h2>
+<p>The default installation of OpenLDAP in recent versions of Ubuntu uses the new <a class="reference external" href="https://help.ubuntu.com/community/OpenLDAPServer#Installation">runtime configuration (RTC)
+system</a> or olc (OpenLDAP Configuration). This installation uses <span class="docutils literal"><span class="pre">cn=config</span></span> (the LDAP database) for configuration rather than the old style <span class="docutils literal"><span class="pre">slapd.conf</span></span>.</p>
+</div>
+<div class="section" id="schemas">
+<h2>Schemas</h2>
+<p>The schemas can be imported dynamically into <span class="docutils literal"><span class="pre">cn=config</span></span> database, without restarting <span class="docutils literal"><span class="pre">slapd</span></span>. The schemas to be imported can placed in
+<span class="docutils literal"><span class="pre">/etc/ldap/schema</span></span>.</p>
+<p>The following schema in ldif format will be used and discussed in the subsequent sections:</p>
+<ul class="simple">
+<li><span class="docutils literal"><span class="pre">openssh-lpk.ldif</span></span></li>
+<li><span class="docutils literal"><span class="pre">ldap_disable_bind_anon.ldif</span></span></li>
+<li><span class="docutils literal"><span class="pre">ssl.ldif</span></span></li>
+</ul>
+</div>
+<div class="section" id="import-openssh-lpk-scheme">
+<h2>Import openssh-lpk scheme</h2>
+<div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f openssh-lpk.ldif
+</pre></div>
+</div>
+<p>where <span class="docutils literal"><span class="pre">openssh-lpk.ldif</span></span> is:</p>
+<div class="highlight-python"><div class="highlight"><pre>dn: cn=openssh-lpk,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: openssh-lpk
+olcAttributeTypes: ( 1.3.6.1.4.1.24552.500.1.1.1.13 NAME 'sshPublicKey'
+  DESC 'MANDATORY: OpenSSH Public key'
+  EQUALITY octetStringMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )
+olcObjectClasses: ( 1.3.6.1.4.1.24552.500.1.1.2.0 NAME 'ldapPublicKey' SUP top AUXILIARY
+  DESC 'MANDATORY: OpenSSH LPK objectclass'
+  MAY ( sshPublicKey $ uid )
+  )
+</pre></div>
+</div>
+</div>
+<div class="section" id="force-authentication">
+<h2>Force authentication</h2>
+<p>By default, OpenLDAP allows anonymous query from any client servers. You may want to enable authentication so that only authenticated clients are able to query the server:</p>
+<div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f ldap_disable_bind_anon.ldif
+</pre></div>
+</div>
+<p>where <span class="docutils literal"><span class="pre">ldap_disable_bind_anon.ldif</span></span> is:</p>
+<div class="highlight-python"><div class="highlight"><pre>dn: cn=config
+changetype: modify
+add: olcDisallows
+olcDisallows: bind_anon
+
+dn: cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+
+dn: olcDatabase={-1}frontend,cn=config
+changetype: modify
+add: olcRequires
+olcRequires: authc
+</pre></div>
+</div>
+<p class="readmorewrapper"><a class="readmore" href="https://blog.shichao.io/2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html#more">Read more...</a></p></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+]]></description>
+             <pubDate>Fri, 17 Apr 2015 00:00:00 -0700</pubDate>
+        </item>
+    
         <item>
             <link>https://blog.shichao.io/2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html</link>
             <guid>https://blog.shichao.io/2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html</guid>
@@ -466,48 +553,6 @@ First, we reset and stop each node:</p>
 </ol>
 ]]></description>
              <pubDate>Thu, 20 Mar 2014 00:00:00 -0700</pubDate>
-        </item>
-    
-        <item>
-            <link>https://blog.shichao.io/2014/03/17/setuid_and_uid_euid_and_suid.html</link>
-            <guid>https://blog.shichao.io/2014/03/17/setuid_and_uid_euid_and_suid.html</guid>
-            <title><![CDATA[setuid() and uid, euid and suid]]></title>
-            <description><![CDATA[<h1>setuid() and uid, euid and suid</h1>
-<p>We know that <cite>setuid</cite> bit allows a program to change its effective uid (euid) upon execution. I want to take a look at how <cite>setuid()</cite> system call works through the following experiment.</p>
-<p>Open a terminal session and run the <span class="docutils literal"><span class="pre">passwd</span></span> command (a known <cite>setuid</cite> executable) in the background (it will be suspended with a “[stopped]” output because it requires password from stdin) and get its PID (let’s assume it’s 10401) with <span class="docutils literal"><span class="pre">echo</span> <span class="pre">$!</span></span>:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ passwd &amp;</span>
-<span class="go">$ echo $!  # 10401</span>
-</pre></div>
-</div>
-<p>Then, run <span class="docutils literal"><span class="pre">gdb</span></span> to attach to this process:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo gdb -p $!</span>
-</pre></div>
-</div>
-<p>Open another terminal, the run the following command to get the line that represents the current real UID (<cite>uid</cite>), effective UID (<cite>euid</cite>), saved UID (<cite>suid</cite>) and file system UID (<cite>fsuid</cite>) of the previous <span class="docutils literal"><span class="pre">passwd</span></span> process:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ watch -n 1 grep -i 'uid' /proc/10401/task/10401/status</span>
-<span class="go">Uid:    1000    0       0   0</span>
-</pre></div>
-</div>
-<p>In the first terminal, you can call <cite>seteuid(1000)</cite> to change its <cite>euid</cite> to 1000:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">(gdb) call seteuid(1000)</span>
-<span class="go">$1 = 0</span>
-</pre></div>
-</div>
-<p>Then the output of the <span class="docutils literal"><span class="pre">watch</span></span> command will become:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">Uid:    1000    1000    0   1000</span>
-</pre></div>
-</div>
-<p>As you see the <cite>euid</cite> is 1000 and the process becomes unprivileged. With the following command, you will notice that the USER field has been changed to the regular user instead of root:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ ps -u -p 10401</span>
-</pre></div>
-</div>
-<p class="readmorewrapper"><a class="readmore" href="https://blog.shichao.io/2014/03/17/setuid_and_uid_euid_and_suid.html#more">Read more...</a></p> 
- 
- 
- 
- 
-]]></description>
-             <pubDate>Mon, 17 Mar 2014 00:00:00 -0700</pubDate>
         </item>
     
     </channel>

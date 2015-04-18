@@ -69,6 +69,108 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>January 24, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/01/24/gson_simple_example_of_json_serialization.html">GSON simple example of JSON deserialization and use of parser</a></h1>
+<p>It seems that JSON-lib is a bit old and requires many dependencies, so I try to have a quick look at Google GSON, which has become the most popular tools for JSON in Java.</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">"id"</span><span class="p">:</span> <span class="s2">"10001"</span><span class="p">,</span>
+    <span class="nt">"time"</span><span class="p">:</span> <span class="s2">"20.1"</span><span class="p">,</span>
+    <span class="nt">"result"</span><span class="p">:</span> <span class="p">[{</span>
+        <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"John"</span><span class="p">,</span>
+        <span class="nt">"age"</span><span class="p">:</span> <span class="s2">"22"</span>
+        <span class="p">},{</span>
+        <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Jim"</span><span class="p">,</span>
+        <span class="nt">"age"</span><span class="p">:</span> <span class="s2">"23"</span>
+        <span class="p">},{</span>
+        <span class="nt">"name"</span><span class="p">:</span> <span class="s2">"Rachel"</span><span class="p">,</span>
+        <span class="nt">"age"</span><span class="p">:</span> <span class="s2">"21"</span>
+        <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>GsonTest.java</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kn">package</span> <span class="nn">com.gson.test</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.google.gson.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.io.FileUtils</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GsonTest</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Deserialize JSON to object</span>
+        <span class="n">String</span> <span class="n">txt</span> <span class="o">=</span> <span class="s">"{'name': 'James', 'age': '25'}"</span><span class="o">;</span>
+        <span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Gson</span><span class="o">();</span>
+        <span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">txt</span><span class="o">,</span> <span class="n">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="cm">/*</span>
+<span class="cm">         * name: James</span>
+<span class="cm">         * age: 25</span>
+<span class="cm">         *</span>
+<span class="cm">         * */</span>
+
+        <span class="n">String</span> <span class="n">r</span> <span class="o">=</span> <span class="n">readToString</span><span class="o">(</span><span class="s">"/path/to/json.txt"</span><span class="o">);</span>
+
+        <span class="c1">// Parse JSON directly (into JsonElement)</span>
+        <span class="n">JsonParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JsonParser</span><span class="o">();</span>
+        <span class="n">JsonObject</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">(</span><span class="n">JsonObject</span><span class="o">)</span><span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">r</span><span class="o">);</span>
+        <span class="n">JsonElement</span> <span class="n">id</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"id"</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">id</span><span class="o">);</span> <span class="c1">// Prints "10001"</span>
+
+        <span class="n">JsonArray</span> <span class="n">arr</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"result"</span><span class="o">).</span><span class="na">getAsJsonArray</span><span class="o">();</span>
+        <span class="n">JsonElement</span> <span class="n">p</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p</span><span class="o">);</span> <span class="c1">// Prints {"name": "John","age": "22"}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">readToString</span><span class="o">(</span><span class="n">String</span> <span class="n">path</span><span class="o">){</span>
+        <span class="n">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">String</span> <span class="n">r</span> <span class="o">=</span> <span class="n">FileUtils</span><span class="o">.</span><span class="na">readFileToString</span><span class="o">(</span><span class="n">f</span><span class="o">,</span> <span class="s">"UTF-8"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">r</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">){</span>
+             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+             <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Person</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">age</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="n">String</span> <span class="n">age</span><span class="o">){</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">(){</span>
+         <span class="n">StringBuilder</span> <span class="n">sb</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+         <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"name: "</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s">"\n"</span><span class="o">);</span>
+         <span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"age: "</span> <span class="o">+</span> <span class="n">age</span> <span class="o">+</span> <span class="s">"\n"</span><span class="o">);</span>
+         <span class="k">return</span> <span class="n">sb</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/java.html">Java</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2013/01/24/gson_simple_example_of_json_serialization.html#disqus_thread" data-disqus-identifier="2013/01/24/gson_simple_example_of_json_serialization">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>January 08, 2013</span>
         </div>
         <div class="section">
@@ -451,28 +553,6 @@
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2012/10/04/progress_speed_indicator_for_urlretrieve_in_python.html#disqus_thread" data-disqus-identifier="2012/10/04/progress_speed_indicator_for_urlretrieve_in_python">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>September 22, 2012</span>
-        </div>
-        <div class="section">
-            <h1><a href="2012/09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html">Display desktop on iPad using Air Display over USB tethering</a></h1>
-<p>I was recently exploring remote desktop apps (VNC/RDP things)  for iOS. Then, plenty of them show up, like iDisplay, Splashtop, PocketCloud, Air Display, Displaylink, 2x, etc (all available at App Store). These apps are able to mirror or sustain remote desktop control over computers through Wi-Fi or Bluetooth. Among them, Splashtop seems to have versatility on control and Air Display is fast in streaming.</p>
-<p>While the idea of implementation via USB rather than Wi-Fi sounds easy, it doesn’t really work. The blog of Air Display support says: “In order for iOS apps like Air Display to access the USB bus via the 30-pin dock connector, its developer must be part of Apple’s Made for iPod/iPhone/iPad (MFi) program”. Nevertheless, they propose another solution, USB tethering.</p>
-<p>According to this <a class="reference external" href="http://hijinksinc.com/2010/06/01/use-air-display-over-a-usb-cable/">nifty workaround</a> (for Mac, but same for Windows), what we need is a jailbroken iOS device, then download and install MyWi 5 from Cydia on it. When turning on Air Display on both iOS and Windows, enable USB tethering using MyWi. With the network established, the Air Display on Windows will recognize the device. Then, by clicking on the option for this device, the mirror or remote desktop just work. The trial takes place under the same wireless LAN.</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/os_x.html">OS X</a>, <a href="tags/ios.html">iOS</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2012/09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html#disqus_thread" data-disqus-identifier="2012/09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -481,6 +561,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+        </li><li>
             <a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
             <a href="2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
@@ -498,8 +580,6 @@
             <a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
         </li><li>
             <a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a>
-        </li><li>
-            <a href="2014/03/17/setuid_and_uid_euid_and_suid.html">setuid() and uid, euid and suid</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -533,6 +613,7 @@
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
+      <a href="tags/openldap.html" style="font-size: 8pt">OpenLDAP</a>&nbsp;&nbsp;
       <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
@@ -541,9 +622,9 @@
       <a href="tags/rdp.html" style="font-size: 8pt">RDP</a>&nbsp;&nbsp;
       <a href="tags/sml.html" style="font-size: 8pt">SML</a>&nbsp;&nbsp;
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
-      <a href="tags/ssh.html" style="font-size: 8pt">SSH</a>&nbsp;&nbsp;
+      <a href="tags/ssh.html" style="font-size: 9pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 13pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 14pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;
