@@ -39,8 +39,8 @@ system</a> or olc (OpenLDAP Configuration). This installation uses <span class="
 <li><span class="docutils literal"><span class="pre">ssl.ldif</span></span></li>
 </ul>
 </div>
-<div class="section" id="import-openssh-lpk-scheme">
-<h2>Import openssh-lpk scheme</h2>
+<div class="section" id="importing-openssh-lpk-scheme">
+<h2>Importing openssh-lpk scheme</h2>
 <div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f openssh-lpk.ldif
 </pre></div>
 </div>
@@ -59,8 +59,8 @@ olcObjectClasses: ( 1.3.6.1.4.1.24552.500.1.1.2.0 NAME 'ldapPublicKey' SUP top A
 </pre></div>
 </div>
 </div>
-<div class="section" id="force-authentication">
-<h2>Force authentication</h2>
+<div class="section" id="forcing-authentication">
+<h2>Forcing authentication</h2>
 <p>By default, OpenLDAP allows anonymous query from any client servers. You may want to enable authentication so that only authenticated clients are able to query the server:</p>
 <div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f ldap_disable_bind_anon.ldif
 </pre></div>

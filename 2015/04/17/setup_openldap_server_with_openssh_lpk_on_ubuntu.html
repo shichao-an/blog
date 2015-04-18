@@ -100,8 +100,8 @@ system</a> or olc (OpenLDAP Configuration). This installation uses <span class="
 <li><span class="docutils literal"><span class="pre">ssl.ldif</span></span></li>
 </ul>
 </div>
-<div class="section" id="import-openssh-lpk-scheme">
-<h2>Import openssh-lpk scheme</h2>
+<div class="section" id="importing-openssh-lpk-scheme">
+<h2>Importing openssh-lpk scheme</h2>
 <div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f openssh-lpk.ldif
 </pre></div>
 </div>
@@ -120,8 +120,8 @@ olcObjectClasses: ( 1.3.6.1.4.1.24552.500.1.1.2.0 NAME &#39;ldapPublicKey&#39; S
 </pre></div>
 </div>
 </div>
-<div class="section" id="force-authentication">
-<h2>Force authentication</h2>
+<div class="section" id="forcing-authentication">
+<h2>Forcing authentication</h2>
 <p>By default, OpenLDAP allows anonymous query from any client servers. You may want to enable authentication so that only authenticated clients are able to query the server:</p>
 <div class="highlight-python"><div class="highlight"><pre>ldapadd -Y EXTERNAL -H ldapi:/// -f ldap_disable_bind_anon.ldif
 </pre></div>
@@ -144,8 +144,8 @@ olcRequires: authc
 </pre></div>
 </div>
 <div id="more"> </div></div>
-<div class="section" id="secure-ldap-with-tls">
-<h2>Secure LDAP with TLS</h2>
+<div class="section" id="securing-ldap-with-tls">
+<h2>Securing LDAP with TLS</h2>
 <ul>
 <li><p class="first">Install the package that provides <span class="docutils literal"><span class="pre">certtool</span></span>:</p>
 <div class="highlight-python"><div class="highlight"><pre>apt-get install gnutls-bin
@@ -166,8 +166,8 @@ certtool --generate-self-signed --load-privkey ldap.gnutls.key --outfile ldap.gn
 </li>
 </ul>
 </div>
-<div class="section" id="import-ssl-schema">
-<h2>Import SSL schema</h2>
+<div class="section" id="importing-ssl-schema">
+<h2>Importing SSL schema</h2>
 <div class="highlight-python"><div class="highlight"><pre>ldapmodify -Y EXTERNAL -H ldapi:/// -f ssl.ldif
 </pre></div>
 </div>
@@ -191,30 +191,30 @@ olcTLSVerifyClient: never
 </pre></div>
 </div>
 </div>
-<div class="section" id="enable-ldaps">
-<h2>Enable LDAPS</h2>
+<div class="section" id="enabling-ldaps">
+<h2>Enabling LDAPS</h2>
 <p>By default, only <span class="docutils literal"><span class="pre">ldap</span></span> and <span class="docutils literal"><span class="pre">ldapi</span></span> (Unix domain socket) are enabled. Make <span class="docutils literal"><span class="pre">ldap</span></span> listen to only 127.0.0.1 and keep the latter so that you can run ldap utilty commands against <span class="docutils literal"><span class="pre">ldapi:///</span></span> without providing credentials if working on the same server.</p>
 <p>Edit <span class="docutils literal"><span class="pre">/etc/default/slapd</span></span> and ensure the following line:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">SLAPD_SERVICES</span><span class="o">=</span><span class="s">&quot;ldap://127.0.0.1:389/ ldaps:/// ldapi:///&quot;</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="configure-etc-ldap-ldap-conf">
-<h2>Configure /etc/ldap/ldap.conf</h2>
+<div class="section" id="configuring-etc-ldap-ldap-conf">
+<h2>Configuring /etc/ldap/ldap.conf</h2>
 <p>Edit <span class="docutils literal"><span class="pre">/etc/ldap/ldap.conf</span></span> and add the following line:</p>
 <div class="highlight-python"><div class="highlight"><pre>TLS_REQCERT never
 </pre></div>
 </div>
 </div>
-<div class="section" id="test-the-above-ldaps-config">
-<h2>Test the above LDAPS config</h2>
+<div class="section" id="testing-the-above-ldaps-config">
+<h2>Testing the above LDAPS config</h2>
 <div class="highlight-python"><div class="highlight"><pre>ldapsearch -d 9 -D &quot;cn=Bob,ou=users,dc=example,dc=com&quot; \
  -w password -b &quot;dc=example,dc=com&quot; -H &quot;ldaps://ldap.example.org&quot; &quot;objectClass=*&quot;
 </pre></div>
 </div>
 </div>
-<div class="section" id="customize-phpldapadmin-config-and-templates">
-<h2>Customize phpLDAPadmin config and templates</h2>
+<div class="section" id="customizing-phpldapadmin-config-and-templates">
+<h2>Customizing phpLDAPadmin config and templates</h2>
 <p>You can customize template configurations (<span class="docutils literal"><span class="pre">/etc/phpldapadmin/config.php</span></span>).</p>
 <p>For example, change the base uid and gid to a greater value:</p>
 <div class="highlight-python"><div class="highlight"><pre>$servers-&gt;setValue(&#39;auto_number&#39;,&#39;min&#39;,array(&#39;uidNumber&#39;=&gt;3000,&#39;gidNumber&#39;=&gt;3000));
@@ -234,8 +234,8 @@ olcTLSVerifyClient: never
 <li>/usr/share/phpldapadmin/htdocs/css/tango/style.css</li>
 </ul>
 </div>
-<div class="section" id="add-a-user-with-ssh-public-key-in-phpldapadmin">
-<h2>Add a user with SSH public key in phpLDAPadmin</h2>
+<div class="section" id="adding-a-user-with-ssh-public-key-in-phpldapadmin">
+<h2>Adding a user with SSH public key in phpLDAPadmin</h2>
 <p>First, create a user with the &#8220;Generic: User Account&#8221; template. Then, go to the &#8220;objectClass&#8221; attribute section, click &#8220;add value&#8221;, and choose the &#8220;ldapPublicKey&#8221; attribute. After you submit, go back to the user edit page, click &#8220;Add new attribute&#8221; on the top part, and choose &#8220;sshPublicKey&#8221;, paste the public key into the text area, and finally click &#8220;Update Object&#8221;.</p>
 <p><a class="reference internal" href="../../../_images/phpldapadmin_objectclass.png"><img alt="s1" src="../../../_images/phpldapadmin_objectclass.png" style="width: 450px;" /></a></p>
 <p><a class="reference internal" href="../../../_images/phpldapadmin_add_attr.png"><img alt="s2" src="../../../_images/phpldapadmin_add_attr.png" style="width: 450px;" /></a></p>
