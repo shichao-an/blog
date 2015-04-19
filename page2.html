@@ -69,6 +69,42 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>March 20, 2014</span>
+        </div>
+        <div class="section">
+            <h1><a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a></h1>
+<p>The Google Chrome browser I use was installed from the third-party repository by Google. The default Pepper Flash Player plugin (version 12.0) does not support some websites (such as <a class="reference external" href="http://www.bilibili.tv">www.bilibili.tv</a>). I have to install the Adobe Flash Player plugin and enable it for Google Chrome.</p>
+<p>1. Install the repository from Adobe (assuming 64-bit):</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm</span>
+<span class="go"># rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-adobe-linux</span>
+</pre></div>
+</div>
+<p>2. Install the flash-plugin package:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install flash-plugin</span>
+</pre></div>
+</div>
+<p>3. Create symbolic link at Google Chrome’s default directory:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># ln -s /usr/lib64/mozilla/plugins/libflashplayer.so /opt/google/chrome/libflashplayer.so</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>Restart Google Chrome, go to “<a class="reference external" href="about:plugins">about:plugins</a>” page, toggle “Details” switch at upper right corner, disable PepperFlash plugin and enable the Adobe Flash Player plugin with location “/usr/lib64/flash-plugin/libflashplayer.so”</li>
+</ol>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/linux.html">Linux</a>, <a href="tags/fedora.html">Fedora</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html#disqus_thread" data-disqus-identifier="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>March 17, 2014</span>
         </div>
         <div class="section">
@@ -608,74 +644,6 @@ $ chmod +x ~/.sleep ~/.wakeup
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2013/09/15/fetch_convert_online_flash_videos.html#disqus_thread" data-disqus-identifier="2013/09/15/fetch_convert_online_flash_videos">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>August 09, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/08/09/setup_selenium_python_environment_x_ubuntu.html">Set up Selenium Python environment with X virtual framebuffer on Ubuntu server</a></h1>
-<ol class="arabic">
-<li><p class="first">Install relevant APT packages:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo apt-get install xorg</span>
-<span class="go">$ sudo apt-get install xfvd</span>
-<span class="go">$ sudo apt-get install firefox</span>
-<span class="go">$ sudo apt-get install openjdk-7-jre</span>
-<span class="go">$ sudo apt-get install python-pip</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Download Selenium server and Python bindings:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo pip install selenium</span>
-<span class="go">$ wget https://selenium.googlecode.com/files/selenium-server-standalone-2.34.0.jar</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Start virtual framebuffer X server for server number 1 (for DISPLAY) in the background:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo Xvfb :1 &amp;</span>
-<span class="go">$ sudo Xvfb :1 -screen 0 1280x1024x8</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Start Selenium server in the background (without sudo):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ java -jar selenium-server-standalone-2.34.0.jar &amp;</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Write sample Python code in sample.py:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
-<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
-
-
-<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
-<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">"http://www.python.org"</span><span class="p">)</span>
-<span class="k">assert</span> <span class="s">"Python"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
-<span class="n">elem</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_name</span><span class="p">(</span><span class="s">"q"</span><span class="p">)</span>
-<span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">"selenium"</span><span class="p">)</span>
-<span class="n">elem</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="n">Keys</span><span class="o">.</span><span class="n">RETURN</span><span class="p">)</span>
-<span class="k">assert</span> <span class="s">"Google"</span> <span class="ow">in</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
-<span class="n">driver</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Run sample.py with environment variable DISPLAY=:1:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ DISPLAY=:1 python sample.py</span>
-</pre></div>
-</div>
-</li>
-</ol>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/python.html">Python</a>, <a href="tags/ubuntu.html">Ubuntu</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2013/08/09/setup_selenium_python_environment_x_ubuntu.html#disqus_thread" data-disqus-identifier="2013/08/09/setup_selenium_python_environment_x_ubuntu">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -684,6 +652,8 @@ $ chmod +x ~/.sleep ~/.wakeup
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+        </li><li>
             <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
@@ -701,8 +671,6 @@ $ chmod +x ~/.sleep ~/.wakeup
             <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
         </li><li>
             <a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
-        </li><li>
-            <a href="2014/03/20/enabling_adobe_flash_player_plugin_for_google_chrome_on_fedora.html">Enabling Adobe Flash Player plugin for Google Chrome on Fedora</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
