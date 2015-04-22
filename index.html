@@ -69,6 +69,48 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>April 22, 2015</span>
+        </div>
+        <div class="section">
+            <h1><a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a></h1>
+<p><span class="docutils literal"><span class="pre">auditd</span></span> can be used to track user commands executed in a TTY. If the system is a server and the user logins through SSH, the <span class="docutils literal"><span class="pre">pam_tty_audit</span></span> PAM module must be enabled in the PAM configuration for sshd (the following line must appear in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span>):</p>
+<div class="highlight-python"><div class="highlight"><pre>session required pam_tty_audit.so enable=*
+</pre></div>
+</div>
+<p>Then, the audit report can be reviewed using the <span class="docutils literal"><span class="pre">aureport</span></span> command, e.g. tty keystrokes:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># aureport --tty</span>
+</pre></div>
+</div>
+<p>However, the above setup cannot audit users that switch to root using the <span class="docutils literal"><span class="pre">sudo</span> <span class="pre">su</span> <span class="pre">-</span></span> command. In order to audit all commands run by root, <a class="reference external" href="http://serverfault.com/questions/470755/log-all-commands-run-by-admins-on-production-servers">as referenced here</a>, the following two lines must be added to <span class="docutils literal"><span class="pre">/etc/audit/audit.rules</span></span>:</p>
+<div class="highlight-text"><div class="highlight"><pre>-a exit,always -F arch=b64 -F euid=0 -S execve
+-a exit,always -F arch=b32 -F euid=0 -S execve
+</pre></div>
+</div>
+<p>And also make sure <span class="docutils literal"><span class="pre">pam_loginuid.so</span></span> is enabled in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span> (default in Ubuntu 14.04).</p>
+<p>In this way, all processes with euid 0 will be audited and their auid (audit user id, which represents the real user before <span class="docutils literal"><span class="pre">su</span></span>) will be preserved in the log. To check the audit log, for example about a user with uid 1000, the following command can be used:</p>
+<div class="highlight-text"><div class="highlight"><pre>ausearch -ua 1000
+</pre></div>
+</div>
+<p>The <span class="docutils literal"><span class="pre">audit.log</span></span> file is located at <span class="docutils literal"><span class="pre">/var/log/audit</span></span>.</p>
+<p>Note that before auditing takes effect, the system needs reboot after either installing the <span class="docutils literal"><span class="pre">auditd</span></span> package or editing these configuration files. All above were tested on Ubuntu 14.04. Here is a script that can set all these up:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/f019f7b9ab51c271ad49">setup-audit.sh</a></li>
+</ul>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/ubuntu.html">Ubuntu</a>, <a href="tags/auditd.html">auditd</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html#disqus_thread" data-disqus-identifier="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>April 19, 2015</span>
         </div>
         <div class="section">
@@ -713,82 +755,6 @@ First, we reset and stop each node:</p>
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html#disqus_thread" data-disqus-identifier="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>April 04, 2014</span>
-        </div>
-        <div class="section">
-            <h1><a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a></h1>
-<p>We know that the double brackets constructs can be used in place of the <span class="docutils literal"><span class="pre">test</span></span> builtin (<span class="docutils literal"><span class="pre">[</span></span>) commonly used as single brackets to evaluate conditional expressions. The double brackets are preferred in terms of writing less error-prone scripts, though it is not POSIX-compliant (not portable to many other shells).</p>
-<p>The primary difference of double brackets from the <span class="docutils literal"><span class="pre">test</span></span> builtin is that word splitting and filename expansion are not performed within them. It is easier to understand the filename expansion difference in this case, let’s take a look at the difference of word splitting.</p>
-<ol class="arabic">
-<li><p class="first">First, the following command fails because in <span class="docutils literal"><span class="pre">test</span></span> constructs the word splitting is performed after parameter expansion (and variable expansion, if any):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'foobar="hello world"; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ '[' hello world = 'hello world' ']'</span>
-<span class="go">bash: line 0: [: too many arguments</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">In the double brackes, the error will not occur because word splitting is not performed, like the following:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'foobar="hello world"; [[ $foobar = "hello world" ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ [[ hello world = \h\e\l\l\o\ \w\o\r\l\d ]]</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">We can supress word splitting in the <span class="docutils literal"><span class="pre">test</span></span> construct by setting IFS to null, because when IFS is null, word splitting never occurs. This time, this command will succeed:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar="hello world"; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ '[' 'hello world' = 'hello world' ']'</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Another feature to note is that double brackets treat unset variables and null variable (variable whose value is a null string, i.e. ‘’)  differently from the <span class="docutils literal"><span class="pre">test</span></span> construct. For example:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar=""; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar=</span>
-<span class="go">+ '[' = 'hello world' ']'</span>
-<span class="go">bash: line 0: [: =: unary operator expected</span>
-
-<span class="go">$ bash -xc 'IFS=""; foobar=""; [[ $foobar = "hello world" ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar=</span>
-<span class="go">+ [[ '' = \h\e\l\l\o\ \w\o\r\l\d ]]</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<p>The unset or null variable is converted to null argument (<span class="docutils literal"><span class="pre">''</span></span>) as a result in double brackets, while in <span class="docutils literal"><span class="pre">test</span></span> constructs it is removed.</p>
-<ol class="arabic" start="5">
-<li><p class="first">You may notice in the second step above that the xtrace output of the conditional expression to the right of the operator is <span class="docutils literal"><span class="pre">\h\e\l\l\o\</span> <span class="pre">\w\o\r\l\d</span></span>. This is because when using operators <span class="docutils literal"><span class="pre">==</span></span>, <span class="docutils literal"><span class="pre">!=</span></span> and the POSIX version <span class="docutils literal"><span class="pre">=</span></span>, the string to the right is considered a pattern and pattern matching will be performed. The backslash indicates the each character is literal instead of pattern, because “hello world” is quoted. The following example makes the right string as pattern:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar="hello world"; [[ $foobar = hello* ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ [[ hello world = hello* ]]</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-</ol>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/bash.html">Bash</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html#disqus_thread" data-disqus-identifier="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -797,6 +763,8 @@ First, we reset and stop each node:</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+        </li><li>
             <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
@@ -814,8 +782,6 @@ First, we reset and stop each node:</p>
             <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li><li>
             <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
-        </li><li>
-            <a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -827,6 +793,7 @@ First, we reset and stop each node:</p>
 </div></section><section><div class="widget">
     <h1>Tags Cloud</h1>
       <a href="tags/apache.html" style="font-size: 8pt">Apache</a>&nbsp;&nbsp;
+      <a href="tags/auditd.html" style="font-size: 8pt">auditd</a>&nbsp;&nbsp;
       <a href="tags/aws.html" style="font-size: 9pt">AWS</a>&nbsp;&nbsp;
       <a href="tags/bash.html" style="font-size: 12pt">Bash</a>&nbsp;&nbsp;
       <a href="tags/bsd.html" style="font-size: 9pt">BSD</a>&nbsp;&nbsp;
@@ -860,7 +827,7 @@ First, we reset and stop each node:</p>
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
       <a href="tags/ssh.html" style="font-size: 10pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 15pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 16pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;

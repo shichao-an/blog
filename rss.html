@@ -5,8 +5,40 @@
         <link>https://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Sun, 19 Apr 2015 00:00:00 -0700</pubDate>
+        <pubDate>Wed, 22 Apr 2015 00:00:00 -0700</pubDate>
         
+        <item>
+            <link>https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html</link>
+            <guid>https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html</guid>
+            <title><![CDATA[Auditing user TTY and root commands with auditd on Ubuntu]]></title>
+            <description><![CDATA[<h1>Auditing user TTY and root commands with auditd on Ubuntu</h1>
+<p><span class="docutils literal"><span class="pre">auditd</span></span> can be used to track user commands executed in a TTY. If the system is a server and the user logins through SSH, the <span class="docutils literal"><span class="pre">pam_tty_audit</span></span> PAM module must be enabled in the PAM configuration for sshd (the following line must appear in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span>):</p>
+<div class="highlight-python"><div class="highlight"><pre>session required pam_tty_audit.so enable=*
+</pre></div>
+</div>
+<p>Then, the audit report can be reviewed using the <span class="docutils literal"><span class="pre">aureport</span></span> command, e.g. tty keystrokes:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># aureport --tty</span>
+</pre></div>
+</div>
+<p>However, the above setup cannot audit users that switch to root using the <span class="docutils literal"><span class="pre">sudo</span> <span class="pre">su</span> <span class="pre">-</span></span> command. In order to audit all commands run by root, <a class="reference external" href="http://serverfault.com/questions/470755/log-all-commands-run-by-admins-on-production-servers">as referenced here</a>, the following two lines must be added to <span class="docutils literal"><span class="pre">/etc/audit/audit.rules</span></span>:</p>
+<div class="highlight-text"><div class="highlight"><pre>-a exit,always -F arch=b64 -F euid=0 -S execve
+-a exit,always -F arch=b32 -F euid=0 -S execve
+</pre></div>
+</div>
+<p>And also make sure <span class="docutils literal"><span class="pre">pam_loginuid.so</span></span> is enabled in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span> (default in Ubuntu 14.04).</p>
+<p>In this way, all processes with euid 0 will be audited and their auid (audit user id, which represents the real user before <span class="docutils literal"><span class="pre">su</span></span>) will be preserved in the log. To check the audit log, for example about a user with uid 1000, the following command can be used:</p>
+<div class="highlight-text"><div class="highlight"><pre>ausearch -ua 1000
+</pre></div>
+</div>
+<p>The <span class="docutils literal"><span class="pre">audit.log</span></span> file is located at <span class="docutils literal"><span class="pre">/var/log/audit</span></span>.</p>
+<p>Note that before auditing takes effect, the system needs reboot after either installing the <span class="docutils literal"><span class="pre">auditd</span></span> package or editing these configuration files. All above were tested on Ubuntu 14.04. Here is a script that can set all these up:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/f019f7b9ab51c271ad49">setup-audit.sh</a></li>
+</ul>
+]]></description>
+             <pubDate>Wed, 22 Apr 2015 00:00:00 -0700</pubDate>
+        </item>
+    
         <item>
             <link>https://blog.shichao.io/2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html</link>
             <guid>https://blog.shichao.io/2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html</guid>
@@ -560,72 +592,6 @@ First, we reset and stop each node:</p>
 </ol>
 ]]></description>
              <pubDate>Wed, 09 Apr 2014 00:00:00 -0700</pubDate>
-        </item>
-    
-        <item>
-            <link>https://blog.shichao.io/2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html</link>
-            <guid>https://blog.shichao.io/2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html</guid>
-            <title><![CDATA[Bash double brackets, test contructs and word splitting]]></title>
-            <description><![CDATA[<h1>Bash double brackets, test contructs and word splitting</h1>
-<p>We know that the double brackets constructs can be used in place of the <span class="docutils literal"><span class="pre">test</span></span> builtin (<span class="docutils literal"><span class="pre">[</span></span>) commonly used as single brackets to evaluate conditional expressions. The double brackets are preferred in terms of writing less error-prone scripts, though it is not POSIX-compliant (not portable to many other shells).</p>
-<p>The primary difference of double brackets from the <span class="docutils literal"><span class="pre">test</span></span> builtin is that word splitting and filename expansion are not performed within them. It is easier to understand the filename expansion difference in this case, let’s take a look at the difference of word splitting.</p>
-<ol class="arabic">
-<li><p class="first">First, the following command fails because in <span class="docutils literal"><span class="pre">test</span></span> constructs the word splitting is performed after parameter expansion (and variable expansion, if any):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'foobar="hello world"; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ '[' hello world = 'hello world' ']'</span>
-<span class="go">bash: line 0: [: too many arguments</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">In the double brackes, the error will not occur because word splitting is not performed, like the following:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'foobar="hello world"; [[ $foobar = "hello world" ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ [[ hello world = \h\e\l\l\o\ \w\o\r\l\d ]]</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">We can supress word splitting in the <span class="docutils literal"><span class="pre">test</span></span> construct by setting IFS to null, because when IFS is null, word splitting never occurs. This time, this command will succeed:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar="hello world"; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ '[' 'hello world' = 'hello world' ']'</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Another feature to note is that double brackets treat unset variables and null variable (variable whose value is a null string, i.e. ‘’)  differently from the <span class="docutils literal"><span class="pre">test</span></span> construct. For example:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar=""; [ $foobar = "hello world" ] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar=</span>
-<span class="go">+ '[' = 'hello world' ']'</span>
-<span class="go">bash: line 0: [: =: unary operator expected</span>
-
-<span class="go">$ bash -xc 'IFS=""; foobar=""; [[ $foobar = "hello world" ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar=</span>
-<span class="go">+ [[ '' = \h\e\l\l\o\ \w\o\r\l\d ]]</span>
-</pre></div>
-</div>
-</li>
-</ol>
-<p>The unset or null variable is converted to null argument (<span class="docutils literal"><span class="pre">''</span></span>) as a result in double brackets, while in <span class="docutils literal"><span class="pre">test</span></span> constructs it is removed.</p>
-<ol class="arabic" start="5">
-<li><p class="first">You may notice in the second step above that the xtrace output of the conditional expression to the right of the operator is <span class="docutils literal"><span class="pre">\h\e\l\l\o\</span> <span class="pre">\w\o\r\l\d</span></span>. This is because when using operators <span class="docutils literal"><span class="pre">==</span></span>, <span class="docutils literal"><span class="pre">!=</span></span> and the POSIX version <span class="docutils literal"><span class="pre">=</span></span>, the string to the right is considered a pattern and pattern matching will be performed. The backslash indicates the each character is literal instead of pattern, because “hello world” is quoted. The following example makes the right string as pattern:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ bash -xc 'IFS=""; foobar="hello world"; [[ $foobar = hello* ]] &amp;&amp; echo "yes"'</span>
-<span class="go">+ IFS=</span>
-<span class="go">+ foobar='hello world'</span>
-<span class="go">+ [[ hello world = hello* ]]</span>
-<span class="go">+ echo yes</span>
-<span class="go">yes</span>
-</pre></div>
-</div>
-</li>
-</ol>
-]]></description>
-             <pubDate>Fri, 04 Apr 2014 00:00:00 -0700</pubDate>
         </item>
     
     </channel>

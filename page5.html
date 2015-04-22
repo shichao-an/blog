@@ -69,6 +69,50 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>October 26, 2012</span>
+        </div>
+        <div class="section">
+            <h1><a href="2012/10/26/configure_sml_mode_on_emacs_for_standard_ml_on_mac_os_x.html">Configure SML mode on Emacs for Standard ML on Mac OS X</a></h1>
+<p>Before start, we have to make sure the Emacs For Mac OS X has been installed, which can be retrieved at <a class="reference external" href="http://emacsformacosx.com/">emacsformacosx.com</a>.</p>
+<ol class="arabic">
+<li><p class="first">Download the lastest distribution (110.75 as of posting date) of SML .dmg file from <a class="reference external" href="http://smlnj.cs.uchicago.edu/dist/working/110.75/index.html">this working site</a>, and then install it.</p>
+</li>
+<li><p class="first">Download the latest Emacs Lisp package for SML mode from <a class="reference external" href="http://www.iro.umontreal.ca/~monnier/elisp/">this site</a>, which should be sml-mode-5.0.tar.gz at the time. Double-click the downloaded file and make it folder, and place the folder anywhere you like.</p>
+</li>
+<li><p class="first">Open terminal, create a file named <span class="docutils literal"><span class="pre">.emacs</span></span> at your user folder. Add the following lines of Lisp in the file:</p>
+<div class="highlight-common-lisp"><div class="highlight"><pre><span class="p">(</span><span class="k">setq</span> <span class="nv">load-path</span> <span class="p">(</span><span class="nb">cons</span> <span class="s">"/path/to/sml-mode-5.0"</span> <span class="nv">load-path</span><span class="p">))</span>
+<span class="p">(</span><span class="nb">load</span> <span class="s">"sml-mode-startup"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><span class="docutils literal"><span class="pre">/path/to/sml-mode-5.0</span></span> indicates the path to SML mode package downloaded in Step 2.</p>
+<p>As the installation in Step 1 makes binary file of SML/NJ compiler placed at <span class="docutils literal"><span class="pre">/usr/local/smlnj-110.75/bin</span></span>, then you have to append the following lines into <span class="docutils literal"><span class="pre">.emacs</span></span>:</p>
+<div class="highlight-common-lisp"><div class="highlight"><pre><span class="p">(</span><span class="nv">setenv</span> <span class="s">"PATH"</span> <span class="p">(</span><span class="nv">concat</span> <span class="s">"/usr/local/smlnj-110.75/bin:"</span> <span class="p">(</span><span class="nv">getenv</span> <span class="s">"PATH"</span><span class="p">)))</span>
+<span class="p">(</span><span class="k">setq</span> <span class="nv">exec-path</span> <span class="p">(</span><span class="nb">cons</span> <span class="s">"/usr/local/smlnj-110.75/bin"</span>  <span class="nv">exec-path</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Configuration done.</p>
+<p>Open Emacs, type <em>M-x</em> run-sml, a buffer should appear with “Standard ML of New Jersey” compiler info listed. You can now input and run ML code.</p>
+<p><a class="reference internal" href="_images/Screen-Shot-2012-10-26-at-1.52.20-AM.png"><img alt="s1" src="_images/Screen-Shot-2012-10-26-at-1.52.20-AM.png" style="width: 450px;"/></a></p>
+<p>To edit a file in SML, create a new file using <em>C-x C-f</em> with .sml extension, or create a file with whatever extension and type <em>M-x</em> sml-mode. Then the minibuffer region will become SML rather than Fundamental, and the syntax will be highlighted.</p>
+<p><a class="reference internal" href="_images/Emacs_SML_up.png"><img alt="s2" src="_images/Emacs_SML_up.png" style="width: 450px;"/></a></p>
+</li>
+</ol>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/sml.html">SML</a>, <a href="tags/emacs.html">Emacs</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2012/10/26/configure_sml_mode_on_emacs_for_standard_ml_on_mac_os_x.html#disqus_thread" data-disqus-identifier="2012/10/26/configure_sml_mode_on_emacs_for_standard_ml_on_mac_os_x">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>October 04, 2012</span>
         </div>
         <div class="section">
@@ -370,6 +414,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+        </li><li>
             <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
@@ -387,8 +433,6 @@
             <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li><li>
             <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
-        </li><li>
-            <a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -400,6 +444,7 @@
 </div></section><section><div class="widget">
     <h1>Tags Cloud</h1>
       <a href="tags/apache.html" style="font-size: 8pt">Apache</a>&nbsp;&nbsp;
+      <a href="tags/auditd.html" style="font-size: 8pt">auditd</a>&nbsp;&nbsp;
       <a href="tags/aws.html" style="font-size: 9pt">AWS</a>&nbsp;&nbsp;
       <a href="tags/bash.html" style="font-size: 12pt">Bash</a>&nbsp;&nbsp;
       <a href="tags/bsd.html" style="font-size: 9pt">BSD</a>&nbsp;&nbsp;
@@ -433,7 +478,7 @@
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
       <a href="tags/ssh.html" style="font-size: 10pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 15pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 16pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;

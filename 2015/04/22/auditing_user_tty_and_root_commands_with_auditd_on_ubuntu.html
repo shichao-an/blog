@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Personal Blogging Site of Shichao An">
         <meta name="viewport" content="width=device-width">
-        <title>推荐两个用于往国内翻的VPN &mdash; Shichao&#39;s Blog</title>
+        <title>Auditing user TTY and root commands with auditd on Ubuntu &mdash; Shichao&#39;s Blog</title>
             <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
@@ -29,8 +29,8 @@
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
         
-  <link rel="next" title="代码行统计工具 CLOC" href="../../04/30/count_lines_of_code_with_cloc.html" /><link rel="prev" title="Display desktop on iPad using Air Display over USB tethering" href="../../09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
-  <link rel="canonical" href="https://blog.shichao.io/2012/07/31/recommended_vpn_providers_in_china.html" /><script type="text/javascript">
+  <link rel="next" title="Setup OpenLDAP client server with SSH access on Ubuntu 14.04" href="../19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
+  <link rel="canonical" href="https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
         VERSION:     '1.5',
@@ -69,15 +69,33 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
-            <span>July 31, 2012</span>
+            <span>April 22, 2015</span>
         </div>
-    <div class="section" id="vpn">
-<h1>推荐两个用于往国内翻的VPN</h1>
-<p>非凡VPN（vpn123）和91vpn（n个代理网站，官网貌似木有域名是个ip地址）</p>
-<p>还没有使用，初步查了一下。</p>
-<p>共同的特点就是标题所示的，他们都有国内节点，适用于在国外的同学使用，用于访问国内的一些视频网站、CNTV以及其他用处（据说国外IP无法使用U盾之类验证的国内网上银行）。</p>
-<p>前者做的比较实在，windows客户端界面比较好，支持PPTP、L2TP和OpenVPN，购买后可以查看服务器列表，因此可以比较方便的配置iPad/iPhone/Android，Windows 7下也可以通过配置VPN连接。而且提供测试账号。刚刚测试了一下美国测试节点，还可以，看youtube标清视频还算流畅。</p>
-<p>后者貌似用的人更多，代理商也多，淘宝上就好多。支持PPTP、L2TP。声称全球3000多台服务器，但貌似不公布服务器列表（当然肯定有办法获得），网站上只说明了windows客户端的使用。</p>
+    <div class="section" id="auditing-user-tty-and-root-commands-with-auditd-on-ubuntu">
+<h1>Auditing user TTY and root commands with auditd on Ubuntu</h1>
+<p><span class="docutils literal"><span class="pre">auditd</span></span> can be used to track user commands executed in a TTY. If the system is a server and the user logins through SSH, the <span class="docutils literal"><span class="pre">pam_tty_audit</span></span> PAM module must be enabled in the PAM configuration for sshd (the following line must appear in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span>):</p>
+<div class="highlight-python"><div class="highlight"><pre>session required pam_tty_audit.so enable=*
+</pre></div>
+</div>
+<p>Then, the audit report can be reviewed using the <span class="docutils literal"><span class="pre">aureport</span></span> command, e.g. tty keystrokes:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># aureport --tty</span>
+</pre></div>
+</div>
+<p>However, the above setup cannot audit users that switch to root using the <span class="docutils literal"><span class="pre">sudo</span> <span class="pre">su</span> <span class="pre">-</span></span> command. In order to audit all commands run by root, <a class="reference external" href="http://serverfault.com/questions/470755/log-all-commands-run-by-admins-on-production-servers">as referenced here</a>, the following two lines must be added to <span class="docutils literal"><span class="pre">/etc/audit/audit.rules</span></span>:</p>
+<div class="highlight-text"><div class="highlight"><pre>-a exit,always -F arch=b64 -F euid=0 -S execve
+-a exit,always -F arch=b32 -F euid=0 -S execve
+</pre></div>
+</div>
+<p>And also make sure <span class="docutils literal"><span class="pre">pam_loginuid.so</span></span> is enabled in <span class="docutils literal"><span class="pre">/etc/pam.d/sshd</span></span> (default in Ubuntu 14.04).</p>
+<p>In this way, all processes with euid 0 will be audited and their auid (audit user id, which represents the real user before <span class="docutils literal"><span class="pre">su</span></span>) will be preserved in the log. To check the audit log, for example about a user with uid 1000, the following command can be used:</p>
+<div class="highlight-text"><div class="highlight"><pre>ausearch -ua 1000
+</pre></div>
+</div>
+<p>The <span class="docutils literal"><span class="pre">audit.log</span></span> file is located at <span class="docutils literal"><span class="pre">/var/log/audit</span></span>.</p>
+<p>Note that before auditing takes effect, the system needs reboot after either installing the <span class="docutils literal"><span class="pre">auditd</span></span> package or editing these configuration files. All above were tested on Ubuntu 14.04. Here is a script that can set all these up:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/f019f7b9ab51c271ad49">setup-audit.sh</a></li>
+</ul>
 </div>
 
     <div class="postmeta">
@@ -88,21 +106,21 @@
         <div class="tags">
             <span>
                 Tags:
-                <a href="../../../tags/vpn.html">VPN</a></span>
+                <a href="../../../tags/ubuntu.html">Ubuntu</a>, <a href="../../../tags/auditd.html">auditd</a></span>
         </div>
         </div><ul class="related clearfix">
-            <li class="left"> &laquo; <a href="../../09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html">Display desktop on iPad using Air Display over USB tethering</a></li>
-            <li class="right"><a href="../../04/30/count_lines_of_code_with_cloc.html">代码行统计工具 CLOC</a> &raquo; </li>
-        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2012/07/31/recommended_vpn_providers_in_china";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
+            <li class="left"></li>
+            <li class="right"><a href="../19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a> &raquo; </li>
+        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="../../../2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+            <a href="#">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
-            <a href="../../../2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+            <a href="../19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+            <a href="../17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+            <a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
             <a href="../../../2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
         </li><li>

@@ -69,6 +69,61 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>September 15, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/09/15/fetch_convert_online_flash_videos.html">Fetch and convert online flash videos</a></h1>
+<ol class="arabic">
+<li><p class="first">Installation of prerequisite utilities:</p>
+<ul class="simple">
+<li>Perl module: WWW::Mechanize</li>
+<li><a class="reference external" href="https://code.google.com/p/get-flash-videos/wiki/Installation">get-flash-videos</a></li>
+<li><a class="reference external" href="http://www.ffmpeg.org/download.html">ffmpeg</a></li>
+</ul>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo cpan install WWW::Mechanize</span>
+<span class="go">$ git clone https://github.com/monsieurvideo/get-flash-videos.git /path/to/get-flash-videos</span>
+<span class="go">$ ln -s /usr/local/bin/get_flash_videos /path/to/get-flash-videos/get_flash_videos</span>
+</pre></div>
+</div>
+<p>For the installation of ffmpeg, see <a class="reference external" href="http://www.ffmpeg.org/download.html">http://www.ffmpeg.org/download.html</a>.</p>
+</li>
+<li><p class="first">Download flash-video-archiver scripts:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ git clone https://github.com/moleculea/flash-video-archiver.git flash-video-archiver</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a file of video link list, e.g. videos.txt:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ cat /path/to/videos.txt</span>
+
+<span class="go">http://example.com/video/4438</span>
+<span class="go">http://example.com/video/4512</span>
+<span class="go">http://example.org/video/hjkl</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Fetch videos and convert them into MP4:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ cd flash-video-archiver</span>
+<span class="go">$ ./fetch.sh /path/to/videos.txt /path/to/output/directory</span>
+<span class="go">$ ./convert.sh /path/to/output/directory</span>
+</pre></div>
+</div>
+</li>
+</ol>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/bash.html">Bash</a>, <a href="tags/perl.html">Perl</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2013/09/15/fetch_convert_online_flash_videos.html#disqus_thread" data-disqus-identifier="2013/09/15/fetch_convert_online_flash_videos">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>August 09, 2013</span>
         </div>
         <div class="section">
@@ -591,43 +646,6 @@ Blah...
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2013/03/19/create_a_personal_website_with_sphinx.html#disqus_thread" data-disqus-identifier="2013/03/19/create_a_personal_website_with_sphinx">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>February 07, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/02/07/send_mails_with_mutt_on_linux.html">Send mails with mutt on Linux</a></h1>
-<p>Given that the sendmail MTA is in use on Linux.</p>
-<p>Install mutt:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># yum install mutt</span>
-<span class="go"># vi ~/.muttrc</span>
-</pre></div>
-</div>
-<p>Append the following into <span class="docutils literal"><span class="pre">.muttrc</span></span>:</p>
-<div class="highlight-text"><div class="highlight"><pre>set sendmail="/usr/sbin/sendmail"
-set use_from=yes
-set realname="webmaster"
-set from=no-replay@example.com
-set envelope_from=yes
-</pre></div>
-</div>
-<p>Send email:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># echo "CONTENT" | mutt -s "SUBJECT" -a /path/to/attachment.zip receiver@example.com</span>
-</pre></div>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/linux.html">Linux</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2013/02/07/send_mails_with_mutt_on_linux.html#disqus_thread" data-disqus-identifier="2013/02/07/send_mails_with_mutt_on_linux">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -636,6 +654,8 @@ set envelope_from=yes
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+        </li><li>
             <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
@@ -653,8 +673,6 @@ set envelope_from=yes
             <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li><li>
             <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
-        </li><li>
-            <a href="2014/04/04/bash_double_bracket_test_contructs_and_word_splitting.html">Bash double brackets, test contructs and word splitting</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -666,6 +684,7 @@ set envelope_from=yes
 </div></section><section><div class="widget">
     <h1>Tags Cloud</h1>
       <a href="tags/apache.html" style="font-size: 8pt">Apache</a>&nbsp;&nbsp;
+      <a href="tags/auditd.html" style="font-size: 8pt">auditd</a>&nbsp;&nbsp;
       <a href="tags/aws.html" style="font-size: 9pt">AWS</a>&nbsp;&nbsp;
       <a href="tags/bash.html" style="font-size: 12pt">Bash</a>&nbsp;&nbsp;
       <a href="tags/bsd.html" style="font-size: 9pt">BSD</a>&nbsp;&nbsp;
@@ -699,7 +718,7 @@ set envelope_from=yes
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
       <a href="tags/ssh.html" style="font-size: 10pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 15pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 16pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;
