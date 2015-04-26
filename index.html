@@ -530,7 +530,7 @@ First, we reset and stop each node:</p>
 </pre></div>
 </div>
 <p>Finally, if you want to keep your firewall on and nginx trusted, run the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install coreutils</span>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ brew install coreutils  # for greadlink command</span>
 <span class="go">$ sudo /usr/libexec/ApplicationFirewall/socketfilterfw --add $(greadlink -f /usr/local/bin/nginx)</span>
 </pre></div>
 </div>
