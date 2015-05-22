@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Personal Blogging Site of Shichao An">
         <meta name="viewport" content="width=device-width">
-        <title>Dual boot Ubuntu and Fedora on laptop &mdash; Shichao&#39;s Blog</title>
+        <title>Setup nss-ldapd on Ubuntu 14.04 &mdash; Shichao&#39;s Blog</title>
             <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
@@ -29,8 +29,8 @@
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
         
-  <link rel="next" title="Fix Eclipse icon (not displayed, too big) in Unity Dash on Ubuntu 12.10" href="../../../2013/01/05/fix_eclipse_icon_in_unity_dash_on_ubuntu_12_10.html" /><link rel="prev" title="Adjust brightness in Kubuntu 12.10 on Acer Aspire One" href="../25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
-  <link rel="canonical" href="https://blog.shichao.io/2012/12/23/dual_boot_ubuntu_and_fedora_on_laptop.html" /><script type="text/javascript">
+  <link rel="next" title="Auditing user TTY and root commands with auditd on Ubuntu" href="../../04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
+  <link rel="canonical" href="https://blog.shichao.io/2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
         VERSION:     '1.5',
@@ -69,27 +69,46 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
-            <span>December 23, 2012</span>
+            <span>May 21, 2015</span>
         </div>
-    <div class="section" id="dual-boot-ubuntu-and-fedora-on-laptop">
-<h1>Dual boot Ubuntu and Fedora on laptop</h1>
-<p>Install Ubuntu 12.10 first and then Fedora 17 on the laptop using USB media.</p>
-<ol class="arabic">
-<li><p class="first">Install Ubuntu 12.10 with some free space unallocated</p>
-</li>
-<li><p class="first">Install Fedora 17 in a new partition in the free space</p>
-</li>
-<li><p class="first">Restart and boot Ubuntu, install lvm for Fedora and update grub:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ sudo apt-get install lvm2</span>
-<span class="go">$ sudo mount /dev/sdaN /mnt</span>
-<span class="go">$ sudo update-grub</span>
+    <div class="section" id="setup-nss-ldapd-on-ubuntu-14-04">
+<h1>Setup nss-ldapd on Ubuntu 14.04</h1>
+<p>The last few posts discussed <a class="reference external" href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu">setting up an OpenLDAP server</a> and <a class="reference external" href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu">configuring basic client server</a>. However, that client server uses <a class="reference external" href="http://packages.ubuntu.com/trusty/libnss-ldap">nss-ldap</a> with some known issues <a class="reference external" href="https://wiki.debian.org/LDAP/NSS#Configuring_LDAP_Authentication">as presented here</a>.  With this old and seemingly buggy setup, I simply can&#8217;t make <cite>nss_initgroups_ignoreuses</cite> option work to bypass querying the LDAP server when authenticating local or system users on the server, and have no idea what <span class="docutils literal"><span class="pre">nssldap-update-ignoreusers</span></span> command actually does. When the LDAP server is down or there is network issues connecting the LDAP server, the default configuration will simply block local users from logging in the server (at least for a long time until the query is considered timed out). Also, as I found after checking <span class="docutils literal"><span class="pre">/var/log/auth.log</span></span>, it queries the LDAP server even when doing a Bash completion, because it was very slow when I pressed the TAB key after a path name. Setting <cite>bind_policy</cite> option to soft and  <cite>timelimit</cite> and <cite>bind_timelimit</cite> to smaller values may just alleviate the symptom but does not solve the problem.</p>
+<p>So I decide to use nss-ldapd that comes with the <span class="docutils literal"><span class="pre">libnss-ldapd</span></span> package.</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install libpam-ldap nscd ldap-utils libnss-ldapd
 </pre></div>
 </div>
-<p>(/dev/sdaN is the partition for Fedora for the only mount point /)</p>
-</li>
-<li><p class="first">Reboot</p>
-</li>
-</ol>
+<p>Running the above command will automatically remove the <span class="docutils literal"><span class="pre">libnss-ldap</span></span> package and prompts an interacive post-install steps for you to setup the LDAP parameters. You can disable this interactive behavior and directly place your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span> with the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>export DEBIAN_FRONTEND=noninteractive
+apt-get -y install libpam-ldap nscd ldap-utils libnss-ldapd
+</pre></div>
+</div>
+<p>Then, put your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>:</p>
+<div class="highlight-python"><div class="highlight"><pre>uid nslcd
+gid nslcd
+uri ldaps://ldap.example.com
+base dc=example,dc=com
+binddn cn=OpenLDAP Client,ou=users,dc=example,dc=com
+bindpw password
+tls_reqcert never
+nss_initgroups_ignoreusers ALLLOCAL
+</pre></div>
+</div>
+<p>The last line <span class="docutils literal"><span class="pre">nss_initgroups_ignoreusers</span> <span class="pre">ALLLOCAL</span></span> prevents group membership lookups through LDAP for all local users.</p>
+<p>The other settings for PAM, sudoers and access.conf are essentially the same as the old nss-ldap setup. Just make sure to restart the LDAP nameservice daemon, nslcd, after making changes to <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>.</p>
+<div class="highlight-python"><div class="highlight"><pre>service nslcd restart
+</pre></div>
+</div>
+<p>If nscd cache daemon is also enabled and you make some changes to the user from the LDAP, you may want to clear the cache:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nscd</span> <span class="o">--</span><span class="n">invalidate</span><span class="o">=</span><span class="n">passwd</span>
+<span class="n">nscd</span> <span class="o">--</span><span class="n">invalidate</span><span class="o">=</span><span class="n">group</span>
+</pre></div>
+</div>
+<p>The nslcd daemon also has the advantage that it can be easily stopped in order to temporarily disable the LDAP lookup. This makes the management of LDAP access more easy.</p>
+<p>Finally, here is the setup script:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/0e7fe33cc540797e3ee0">setup-nss-ldapd.sh</a></li>
+</ul>
 </div>
 
     <div class="postmeta">
@@ -100,23 +119,23 @@
         <div class="tags">
             <span>
                 Tags:
-                <a href="../../../tags/ubuntu.html">Ubuntu</a>, <a href="../../../tags/fedora.html">Fedora</a></span>
+                <a href="../../../tags/openldap.html">OpenLDAP</a>, <a href="../../../tags/ubuntu.html">Ubuntu</a></span>
         </div>
         </div><ul class="related clearfix">
-            <li class="left"> &laquo; <a href="../25/adjust_brightness_in_kubuntu_12_10_on_acer_aspire_one.html">Adjust brightness in Kubuntu 12.10 on Acer Aspire One</a></li>
-            <li class="right"><a href="../../../2013/01/05/fix_eclipse_icon_in_unity_dash_on_ubuntu_12_10.html">Fix Eclipse icon (not displayed, too big) in Unity Dash on Ubuntu 12.10</a> &raquo; </li>
-        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2012/12/23/dual_boot_ubuntu_and_fedora_on_laptop";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
+            <li class="left"></li>
+            <li class="right"><a href="../../04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a> &raquo; </li>
+        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2015/05/21/setup_nss_ldapd_on_ubuntu_14_04";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="../../../2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
+            <a href="#">Setup nss-ldapd on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+            <a href="../../04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
-            <a href="../../../2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+            <a href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+            <a href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+            <a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
             <a href="../../../2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
         </li><li>

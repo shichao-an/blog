@@ -5,8 +5,53 @@
         <link>https://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Wed, 22 Apr 2015 00:00:00 -0700</pubDate>
+        <pubDate>Thu, 21 May 2015 00:00:00 -0700</pubDate>
         
+        <item>
+            <link>https://blog.shichao.io/2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html</link>
+            <guid>https://blog.shichao.io/2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html</guid>
+            <title><![CDATA[Setup nss-ldapd on Ubuntu 14.04]]></title>
+            <description><![CDATA[<h1>Setup nss-ldapd on Ubuntu 14.04</h1>
+<p>The last few posts discussed <a class="reference external" href="https://blog.shichao.io/2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu">setting up an OpenLDAP server</a> and <a class="reference external" href="https://blog.shichao.io/2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu">configuring basic client server</a>. However, that client server uses <a class="reference external" href="http://packages.ubuntu.com/trusty/libnss-ldap">nss-ldap</a> with some known issues <a class="reference external" href="https://wiki.debian.org/LDAP/NSS#Configuring_LDAP_Authentication">as presented here</a>.  With this old and seemingly buggy setup, I simply can’t make <cite>nss_initgroups_ignoreuses</cite> option work to bypass querying the LDAP server when authenticating local or system users on the server, and have no idea what <span class="docutils literal"><span class="pre">nssldap-update-ignoreusers</span></span> command actually does. When the LDAP server is down or there is network issues connecting the LDAP server, the default configuration will simply block local users from logging in the server (at least for a long time until the query is considered timed out). Also, as I found after checking <span class="docutils literal"><span class="pre">/var/log/auth.log</span></span>, it queries the LDAP server even when doing a Bash completion, because it was very slow when I pressed the TAB key after a path name. Setting <cite>bind_policy</cite> option to soft and  <cite>timelimit</cite> and <cite>bind_timelimit</cite> to smaller values may just alleviate the symptom but does not solve the problem.</p>
+<p>So I decide to use nss-ldapd that comes with the <span class="docutils literal"><span class="pre">libnss-ldapd</span></span> package.</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install libpam-ldap nscd ldap-utils libnss-ldapd
+</pre></div>
+</div>
+<p>Running the above command will automatically remove the <span class="docutils literal"><span class="pre">libnss-ldap</span></span> package and prompts an interacive post-install steps for you to setup the LDAP parameters. You can disable this interactive behavior and directly place your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span> with the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>export DEBIAN_FRONTEND=noninteractive
+apt-get -y install libpam-ldap nscd ldap-utils libnss-ldapd
+</pre></div>
+</div>
+<p>Then, put your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>:</p>
+<div class="highlight-python"><div class="highlight"><pre>uid nslcd
+gid nslcd
+uri ldaps://ldap.example.com
+base dc=example,dc=com
+binddn cn=OpenLDAP Client,ou=users,dc=example,dc=com
+bindpw password
+tls_reqcert never
+nss_initgroups_ignoreusers ALLLOCAL
+</pre></div>
+</div>
+<p>The last line <span class="docutils literal"><span class="pre">nss_initgroups_ignoreusers</span> <span class="pre">ALLLOCAL</span></span> prevents group membership lookups through LDAP for all local users.</p>
+<p>The other settings for PAM, sudoers and access.conf are essentially the same as the old nss-ldap setup. Just make sure to restart the LDAP nameservice daemon, nslcd, after making changes to <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>.</p>
+<div class="highlight-python"><div class="highlight"><pre>service nslcd restart
+</pre></div>
+</div>
+<p>If nscd cache daemon is also enabled and you make some changes to the user from the LDAP, you may want to clear the cache:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nscd</span> <span class="o">--</span><span class="n">invalidate</span><span class="o">=</span><span class="n">passwd</span>
+<span class="n">nscd</span> <span class="o">--</span><span class="n">invalidate</span><span class="o">=</span><span class="n">group</span>
+</pre></div>
+</div>
+<p>The nslcd daemon also has the advantage that it can be easily stopped in order to temporarily disable the LDAP lookup. This makes the management of LDAP access more easy.</p>
+<p>Finally, here is the setup script:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/0e7fe33cc540797e3ee0">setup-nss-ldapd.sh</a></li>
+</ul>
+]]></description>
+             <pubDate>Thu, 21 May 2015 00:00:00 -0700</pubDate>
+        </item>
+    
         <item>
             <link>https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html</link>
             <guid>https://blog.shichao.io/2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html</guid>
@@ -533,65 +578,6 @@ First, we reset and stop each node:</p>
 </div>
 ]]></description>
              <pubDate>Thu, 01 May 2014 00:00:00 -0700</pubDate>
-        </item>
-    
-        <item>
-            <link>https://blog.shichao.io/2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html</link>
-            <guid>https://blog.shichao.io/2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html</guid>
-            <title><![CDATA[Using Bash arrays and IFS to manipulate filenames]]></title>
-            <description><![CDATA[<h1>Using Bash arrays and IFS to manipulate filenames</h1>
-<p>Assume we want to work with files in a directory. The most intuitive way is to make use of filename expansion, using globbing. We can use the <cite>for construct</cite> and wildcard <span class="docutils literal"><span class="pre">*</span></span> to handle each file nice and clean, without worrying about those filenames that contain whitespaces (suppose that in all of the following context, the working directory contain three files: “Foo”, “Bar”, and “Foo Bar”):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ for file in *; do echo "$file"; done</span>
-</pre></div>
-</div>
-<p>We can also create an array from these filenames, using the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ files=(*)</span>
-</pre></div>
-</div>
-<p>Then, we can take a look at both the attributes and the value of <cite>files</cite>:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ declare -p files</span>
-<span class="go">declare -a files='([0]="Bar" [1]="Foo" [2]="Foo Bar")'</span>
-</pre></div>
-</div>
-<p>What if we want to create an array with specific orders, say by modification time (<cite>mtime</cite>) of files. We have to use the <span class="docutils literal"><span class="pre">ls</span></span> with the <span class="docutils literal"><span class="pre">-t</span></span> switch.  Now there are several practical scenarios discussed as follows.</p>
-<ol class="arabic">
-<li><p class="first">Get the latest modified filename:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ filename=$(ls -t | head -1)</span>
-</pre></div>
-</div>
-</li>
-<li><p class="first">Create an array of filenames ordered by their <cite>mtime</cite>. Clearly, globbing will not work because it is based on filename pattern matching. We have to use both command substitution and word splitting. Let’s try the following first:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ filenames=($(ls -t))</span>
-<span class="go">$ declare -p filenames</span>
-<span class="go">declare -a filenames='([0]="Foo" [1]="Bar" [2]="Bar" [3]="Foo")'</span>
-</pre></div>
-</div>
-<p>Clearly this is not the result we want since the whitespace-contained filename is corrupted.</p>
-<p>We need to hack a little on IFS variable. Let’s try what happens if we disable word splitting by setting IFS to null:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ IFS=</span>
-<span class="go">$ filenames=($(ls -t))</span>
-<span class="go">$ declare -p filenames</span>
-<span class="go">declare -a filenames='([0]="Foo Bar</span>
-<span class="go">Bar</span>
-<span class="go">Foo")'</span>
-</pre></div>
-</div>
-<p>It seems it’s getting worse this time. Since word splitting is not performed, the result of command substitution becomes an single word.</p>
-<p>We know that the result of <span class="docutils literal"><span class="pre">ls</span></span> command is multiple lines of filenames. As the result of command substitution (i.e. <span class="docutils literal"><span class="pre">$(ls</span> <span class="pre">-t)</span></span>), the filenames are separated by newlines (<span class="docutils literal"><span class="pre">\n</span></span>). The default IFS is a sequence of <span class="docutils literal"><span class="pre">\t\n</span></span> (space, tab and newline), which means each of these characters will be used to delimit words. Here we need to suppress the effect of space; just set IFS to newline character (<span class="docutils literal"><span class="pre">\n</span></span>) (as long as your filenames does not contain newlines), with ANSI C quoting (<span class="docutils literal"><span class="pre">$''</span></span>):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ IFS=$'\n'</span>
-<span class="go">$ filenames=($(ls -t))</span>
-<span class="go">$ declare -p filenames</span>
-<span class="go">declare -a filenames='([0]="Foo Bar" [1]="Bar" [2]="Foo")'</span>
-</pre></div>
-</div>
-<p>In similar ways, we can get <cite>n</cite> most recently modified filenames, just make use of parameter expansion:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ echo "${filenames[@]:0:2}"  # Print two most recently modified names</span>
-</pre></div>
-</div>
-</li>
-</ol>
-]]></description>
-             <pubDate>Wed, 09 Apr 2014 00:00:00 -0700</pubDate>
         </item>
     
     </channel>

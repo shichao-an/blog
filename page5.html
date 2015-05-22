@@ -72,6 +72,41 @@
             <span>October 26, 2012</span>
         </div>
         <div class="section">
+            <h1><a href="2012/10/26/tricky_c_program_question_concerning_software_security.html">Tricky C program question concerning software security</a></h1>
+<p>While the software security exam is coming, I try to review some of the facultative homework. Just post one that seems impossible to figure out for me. May some “Da Niu” try to give a solution when seeing this by chance. The code has been modified a little in case… but without changing the original intention.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="cp">#include &lt;stdlib.h&gt;</span>
+
+<span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">char</span> <span class="n">s</span><span class="p">[]){</span>
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="kt">char</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="n">foo</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">something shows up after exit"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The question is to find an input in order that the program will print “something shows up after exit”. What the hell is that?</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/c.html">C</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2012/10/26/tricky_c_program_question_concerning_software_security.html#disqus_thread" data-disqus-identifier="2012/10/26/tricky_c_program_question_concerning_software_security">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
+            <span>October 26, 2012</span>
+        </div>
+        <div class="section">
             <h1><a href="2012/10/26/configure_sml_mode_on_emacs_for_standard_ml_on_mac_os_x.html">Configure SML mode on Emacs for Standard ML on Mac OS X</a></h1>
 <p>Before start, we have to make sure the Emacs For Mac OS X has been installed, which can be retrieved at <a class="reference external" href="http://emacsformacosx.com/">emacsformacosx.com</a>.</p>
 <ol class="arabic">
@@ -414,6 +449,8 @@
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
+        </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
             <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
@@ -431,8 +468,6 @@
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li><li>
             <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
-        </li><li>
-            <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -467,7 +502,7 @@
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
-      <a href="tags/openldap.html" style="font-size: 9pt">OpenLDAP</a>&nbsp;&nbsp;
+      <a href="tags/openldap.html" style="font-size: 10pt">OpenLDAP</a>&nbsp;&nbsp;
       <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
@@ -478,7 +513,7 @@
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
       <a href="tags/ssh.html" style="font-size: 10pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 16pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 17pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;

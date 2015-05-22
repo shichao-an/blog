@@ -69,6 +69,107 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>March 19, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/03/19/create_a_personal_website_with_sphinx.html">Create a personal website with Sphinx</a></h1>
+<p>Sphinx is a documentation generator which converts reStructuredText files into HTML websites and other formats e.g. LaTeX (PDF) and man pages. It’s also a good idea to create simple static website with Sphinx, for example, a personal profile site.</p>
+<p>However, as the default purpose of Sphinx is to create documentation, it requires some customization regarding template structure and style. The following steps help create a simple profile site based on the built-in themes of Sphinx.</p>
+<ol class="arabic">
+<li><p class="first">Download <a class="reference external" href="http://sphinx-doc.org/index.html">Sphinx</a>, create a base directory and quick-start Sphinx. It’ll be helpful to answer “yes” to “Create Makefile?” during sphinx-quickstart:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ easy_install -U sphinx</span>
+<span class="go">$ mkdir base_dir</span>
+<span class="go">$ cd base_dir</span>
+<span class="go">$ sphinx-quickstart</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Change site title.</p>
+<p>Edit <span class="docutils literal"><span class="pre">conf.py</span></span> in the source directory and make the following modifications:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">html_title</span> <span class="o">=</span> <span class="s">"YOUR SITE TITLE"</span>
+<span class="c">#version = '0.0.1'</span>
+<span class="c">#release = '0.0.1'</span>
+</pre></div>
+</div>
+<p>Comment version and release to prevent this version number from being displayed in titles.</p>
+</li>
+<li><p class="first">Customize the content structure based on “basic” theme or its derivatives (“default” and “nature”). We take “nature” as an example here.</p>
+<p>First, edit <span class="docutils literal"><span class="pre">conf.py</span></span> and make the following modifications:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">html_theme</span> <span class="o">=</span> <span class="s">'nature'</span>
+<span class="n">html_sidebars</span> <span class="o">=</span> <span class="p">{</span><span class="s">'**'</span><span class="p">:[</span><span class="s">'localtoc.html'</span><span class="p">,</span><span class="s">'searchbox.html'</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p><span class="docutils literal"><span class="pre">html_sidebars</span></span> determines the built-in templates to be displayed in the sidebar. For other built-in templates and detailed information, see <span class="docutils literal"><span class="pre">html_sidebars</span></span>.</p>
+<p>Second, make sure the settings of the following variables:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">templates_path</span> <span class="o">=</span> <span class="p">[</span><span class="s">'_templates'</span><span class="p">]</span>
+<span class="n">html_static_path</span> <span class="o">=</span> <span class="p">[</span><span class="s">'_static'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><span class="docutils literal"><span class="pre">_templates</span></span> directory stores template files; _static directory stores static files such as CSS and images. These two directories reside in source directory.</p>
+<p>Third, create your own template <span class="docutils literal"><span class="pre">layout.html</span></span> inheriting from the default theme:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd source/_template
+$ vi layout.html
+</pre></div>
+</div>
+<p>Edit layout.html:</p>
+<div class="highlight-jinja"><div class="highlight"><pre><span class="cp">{%</span> <span class="k">extends</span> <span class="s2">"!layout.html"</span> <span class="cp">%}</span><span class="x"/>
+<span class="cp">{%</span>- <span class="k">set</span> <span class="nv">rellinks</span> <span class="o">=</span> <span class="o">[]</span> <span class="cp">%}</span><span class="x"/>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">rootrellink</span> <span class="cp">%}</span><span class="x">&lt;/pre&gt;</span>
+<span class="x">&lt;ul&gt;</span>
+<span class="x">    &lt;li&gt;&lt;a href="index.html"&gt;Home&lt;/a&gt; |&lt;/li&gt;</span>
+<span class="x">    &lt;li&gt;&lt;a href="resume.html"&gt;Resume&lt;/a&gt; |&lt;/li&gt;</span>
+<span class="x">    &lt;li&gt;&lt;a href="projects.html"&gt;Projects&lt;/a&gt; |&lt;/li&gt;</span>
+<span class="x">    &lt;li&gt;&lt;a href="interest.html"&gt;Interest&lt;/a&gt; |&lt;/li&gt;</span>
+<span class="x">    &lt;li&gt;&lt;a href="contact.html"&gt;Contact&lt;/a&gt;&lt;/li&gt;</span>
+<span class="x">    &lt;li&gt;</span><span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"/>
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">relbar2</span> <span class="cp">%}</span><span class="x"/>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="cp">%}</span><span class="x"/>
+<span class="x">The template above creates a header navigation bar of different entries of your sites.</span>
+
+<span class="cp">{%</span>- <span class="k">set</span> <span class="nv">rellinks</span> <span class="o">=</span> <span class="o">[]</span> <span class="cp">%}</span><span class="x"> disables related links (i.e. prev, next and index).</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create reStructuredText (.rst) source files for your entries (<span class="docutils literal"><span class="pre">index.html</span></span>, <span class="docutils literal"><span class="pre">resume.html</span></span>, <span class="docutils literal"><span class="pre">projects.html</span></span>, <span class="docutils literal"><span class="pre">interest.html</span></span>, <span class="docutils literal"><span class="pre">contact.html</span></span>):</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ cd source</span>
+<span class="go">$ vi index.rst</span>
+</pre></div>
+</div>
+<p>Use the following format, which also applies to other .rst files, such as <span class="docutils literal"><span class="pre">resume.rst</span></span>, <span class="docutils literal"><span class="pre">projects.rst</span></span>, <span class="docutils literal"><span class="pre">interest.html</span></span> and <span class="docutils literal"><span class="pre">contact.html</span></span>.</p>
+<div class="highlight-rst"><div class="highlight"><pre><span class="gh">Welcome</span>
+<span class="gh">*******</span>
+Welcome to my site!
+
+<span class="gh">About me</span>
+<span class="gh">========</span>
+I am Blah Blah ...
+
+<span class="gh">More info</span>
+<span class="gh">=========</span>
+Blah...
+
+<span class="p">..</span> <span class="ow">toctree</span><span class="p">::</span>
+   <span class="nc">:maxdepth:</span> <span class="nf">2</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p class="readmorewrapper"><a class="readmore" href="2013/03/19/create_a_personal_website_with_sphinx.html#more">Read more...</a></p> 
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/sphinx.html">Sphinx</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2013/03/19/create_a_personal_website_with_sphinx.html#disqus_thread" data-disqus-identifier="2013/03/19/create_a_personal_website_with_sphinx">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>February 07, 2013</span>
         </div>
         <div class="section">
@@ -539,41 +640,6 @@ set envelope_from=yes
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2012/10/29/hello_world_in_ocaml_with_eclipse.html#disqus_thread" data-disqus-identifier="2012/10/29/hello_world_in_ocaml_with_eclipse">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>October 26, 2012</span>
-        </div>
-        <div class="section">
-            <h1><a href="2012/10/26/tricky_c_program_question_concerning_software_security.html">Tricky C program question concerning software security</a></h1>
-<p>While the software security exam is coming, I try to review some of the facultative homework. Just post one that seems impossible to figure out for me. May some “Da Niu” try to give a solution when seeing this by chance. The code has been modified a little in case… but without changing the original intention.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
-<span class="cp">#include &lt;stdlib.h&gt;</span>
-
-<span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">char</span> <span class="n">s</span><span class="p">[]){</span>
-    <span class="n">scanf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span><span class="n">s</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
-    <span class="kt">char</span> <span class="n">S</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-    <span class="n">foo</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">something shows up after exit"</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>The question is to find an input in order that the program will print “something shows up after exit”. What the hell is that?</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/c.html">C</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2012/10/26/tricky_c_program_question_concerning_software_security.html#disqus_thread" data-disqus-identifier="2012/10/26/tricky_c_program_question_concerning_software_security">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -582,6 +648,8 @@ set envelope_from=yes
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
+        </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
             <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
@@ -599,8 +667,6 @@ set envelope_from=yes
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li><li>
             <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
-        </li><li>
-            <a href="2014/04/09/using_bash_arrays_and_ifs_to_manipulate_filenames.html">Using Bash arrays and IFS to manipulate filenames</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -635,7 +701,7 @@ set envelope_from=yes
       <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
-      <a href="tags/openldap.html" style="font-size: 9pt">OpenLDAP</a>&nbsp;&nbsp;
+      <a href="tags/openldap.html" style="font-size: 10pt">OpenLDAP</a>&nbsp;&nbsp;
       <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
@@ -646,7 +712,7 @@ set envelope_from=yes
       <a href="tags/sphinx.html" style="font-size: 8pt">Sphinx</a>&nbsp;&nbsp;
       <a href="tags/ssh.html" style="font-size: 10pt">SSH</a>&nbsp;&nbsp;
       <a href="tags/tunneling.html" style="font-size: 8pt">Tunneling</a>&nbsp;&nbsp;
-      <a href="tags/ubuntu.html" style="font-size: 16pt">Ubuntu</a>&nbsp;&nbsp;
+      <a href="tags/ubuntu.html" style="font-size: 17pt">Ubuntu</a>&nbsp;&nbsp;
       <a href="tags/unix.html" style="font-size: 8pt">Unix</a>&nbsp;&nbsp;
       <a href="tags/vim.html" style="font-size: 8pt">Vim</a>&nbsp;&nbsp;
       <a href="tags/vpn.html" style="font-size: 8pt">VPN</a>&nbsp;&nbsp;
