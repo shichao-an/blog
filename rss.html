@@ -17,7 +17,7 @@
 <div class="highlight-python"><div class="highlight"><pre>apt-get install libpam-ldap nscd ldap-utils libnss-ldapd
 </pre></div>
 </div>
-<p>Running the above command will automatically remove the <span class="docutils literal"><span class="pre">libnss-ldap</span></span> package and prompts an interacive post-install steps for you to setup the LDAP parameters. You can disable this interactive behavior and directly place your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span> with the following command:</p>
+<p>Running the above command will automatically remove the <span class="docutils literal"><span class="pre">libnss-ldap</span></span> package and prompt interacive post-install steps for you to configure the LDAP parameters. You can disable this interactive behavior and directly place your config in <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span> with the following command:</p>
 <div class="highlight-python"><div class="highlight"><pre>export DEBIAN_FRONTEND=noninteractive
 apt-get -y install libpam-ldap nscd ldap-utils libnss-ldapd
 </pre></div>
@@ -34,7 +34,7 @@ nss_initgroups_ignoreusers ALLLOCAL
 </pre></div>
 </div>
 <p>The last line <span class="docutils literal"><span class="pre">nss_initgroups_ignoreusers</span> <span class="pre">ALLLOCAL</span></span> prevents group membership lookups through LDAP for all local users.</p>
-<p>The other settings for PAM, sudoers and access.conf are essentially the same as the old nss-ldap setup. Just make sure to restart the LDAP nameservice daemon, nslcd, after making changes to <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>.</p>
+<p>The remaining settings for PAM, sudoers and access.conf are essentially the same as the old nss-ldap setup. Just make sure to restart the LDAP nameservice daemon, nslcd, after making changes to <span class="docutils literal"><span class="pre">/etc/nslcd.conf</span></span>:</p>
 <div class="highlight-python"><div class="highlight"><pre>service nslcd restart
 </pre></div>
 </div>
