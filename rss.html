@@ -31,6 +31,8 @@ binddn cn=OpenLDAP Client,ou=users,dc=example,dc=com
 bindpw password
 tls_reqcert never
 nss_initgroups_ignoreusers ALLLOCAL
+bind_timelimit 3
+timelimit 3
 </pre></div>
 </div>
 <p>The last line <span class="docutils literal"><span class="pre">nss_initgroups_ignoreusers</span> <span class="pre">ALLLOCAL</span></span> prevents group membership lookups through LDAP for all local users.</p>
