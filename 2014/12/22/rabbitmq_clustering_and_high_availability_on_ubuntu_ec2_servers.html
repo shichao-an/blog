@@ -184,18 +184,18 @@ First, we reset and stop each node:</p>
 </div>
 <div class="section" id="user-management">
 <h2>User management</h2>
-<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Add privileged user</span>
-rabbitmqctl add_user <span class="s1">&#39;root&#39;</span> <span class="s1">&#39;your_password&#39;</span>
+<div class="highlight-shell"><div class="highlight"><pre># Add privileged user
+rabbitmqctl add_user &#39;root&#39; &#39;your_password&#39;
 rabbitmqctl set_user_tags root administrator
-rabbitmqctl set_permissions root <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span>
-<span class="c"># mq-read</span>
-rabbitmqctl add_user <span class="s1">&#39;mq-read&#39;</span> <span class="s1">&#39;your_password&#39;</span>
+rabbitmqctl set_permissions root &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+# mq-read
+rabbitmqctl add_user &#39;mq-read&#39; &#39;your_password&#39;
 rabbitmqctl set_user_tags mq-read administrator
-rabbitmqctl set_permissions mq-read <span class="s1">&#39;^$&#39;</span> <span class="s1">&#39;^$&#39;</span> <span class="s2">&quot;.*&quot;</span>
-<span class="c"># worker</span>
-rabbitmqctl add_user worker <span class="s1">&#39;your_password&#39;</span>
+rabbitmqctl set_permissions mq-read &#39;^$&#39; &#39;^$&#39; &quot;.*&quot;
+# worker
+rabbitmqctl add_user worker &#39;your_password&#39;
 rabbitmqctl add_vhost /
-rabbitmqctl set_permissions -p / worker <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span> <span class="s2">&quot;.*&quot;</span>
+rabbitmqctl set_permissions -p / worker &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
 </pre></div>
 </div>
 </div>
@@ -207,13 +207,13 @@ rabbitmqctl set_permissions -p / worker <span class="s2">&quot;.*&quot;</span> <
 </div>
 <div class="section" id="useful-rabbitmqctl-commands">
 <h2>Useful rabbitmqctl commands</h2>
-<div class="highlight-shell"><div class="highlight"><pre><span class="c"># Check queues</span>
+<div class="highlight-shell"><div class="highlight"><pre># Check queues
 rabbitmqctl list_queues
 
-<span class="c"># Check master node</span>
+# Check master node
 rabbitmqctl list_queues pid
 
-<span class="c"># Check slaves</span>
+# Check slaves
 rabbitmqctl list_queues slave_pids
 rabbitmqctl list_queues synchronised_slave_pids
 </pre></div>
@@ -246,6 +246,8 @@ rabbitmqctl list_queues synchronised_slave_pids
         </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="../../../2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
+        </li><li>
             <a href="../../../2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="../../../2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
@@ -263,8 +265,6 @@ rabbitmqctl list_queues synchronised_slave_pids
             <a href="../../10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="../../05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
-        </li><li>
-            <a href="../../05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">

@@ -69,6 +69,55 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>May 01, 2014</span>
+        </div>
+        <div class="section">
+            <h1><a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a></h1>
+<p>A Python integer is represented as either of 32-bit or 64-bit signed integer type that is platform-specific, without considering it as <a class="reference external" href="https://docs.python.org/2.7/c-api/int.html">an Python object</a>. As indicated in the documentation, whether it is 32-bit or 64-bit can be revealed by checking <span class="docutils literal"><span class="pre">sys.maxsize</span></span> (or <span class="docutils literal"><span class="pre">sys.maxint</span></span> on older CPython implementations such as 2.4), the value of which “is the largest positive integer supported by the platform’s <span class="docutils literal"><span class="pre">Py_ssize_t</span></span> type and is usually <span class="docutils literal"><span class="pre">2**31</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 32-bit platform and <span class="docutils literal"><span class="pre">2**63</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 64-bit platform”. <a class="reference external" href="https://docs.python.org/2/library/sys.html">[1]</a> <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.maxsize">[2]</a>.</p>
+<p>The following function helps determine number of bits of an integer and returns either 64 or 32 by leveraging the variable discussed above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="k">def</span> <span class="nf">get_int_bits</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">):</span>
+        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxint'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_int</span> <span class="o">&gt;&gt;</span> <span class="mi">62</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">32</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">64</span>
+</pre></div>
+</div>
+<p>Check out the code on GitHub Gist from <a class="reference external" href="https://gist.github.com/shichao-an/b447d24f0a5381b0fa92">this link</a>.</p>
+<p><strong>Updated Jun 10, 2014</strong></p>
+<p>After an exploration of the <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#int.bit_length">built-in types</a>, it is clear that <span class="docutils literal"><span class="pre">int.bit_length</span></span> can be used more easily than bit manipulation.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="k">def</span> <span class="nf">get_int_bits</span><span class="p">():</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">):</span>
+        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxint'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">max_int</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/python.html">Python</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2014/05/01/get_number_of_bits_of_a_python_integer.html#disqus_thread" data-disqus-identifier="2014/05/01/get_number_of_bits_of_a_python_integer">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>April 09, 2014</span>
         </div>
         <div class="section">
@@ -529,107 +578,6 @@ $ chmod +x ~/.sleep ~/.wakeup
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2013/11/05/apache_name_based_virtual_hosts.html#disqus_thread" data-disqus-identifier="2013/11/05/apache_name_based_virtual_hosts">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>October 25, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/10/25/amazon_ec2_auto_scaling_example.html">Amazon EC2 Auto Scaling example</a></h1>
-<p>The following code creates an Auto Scaling group with scale-up and scale-down policies based on the monitoring the CPU utilization of either a specific EC2 instance or instances within the Auto Scaling group cluster.</p>
-<p>If <span class="docutils literal"><span class="pre">alarm_dimensions</span></span> specifies <span class="docutils literal"><span class="pre">InstanceId</span></span>, the Auto Scaling group will scale up or down according to the CPU utilization of the specified running instance; if <span class="docutils literal"><span class="pre">alarm_dimensions</span></span> specifies <span class="docutils literal"><span class="pre">AutoScalingGroupName</span></span>, the Auto Scaling group will scale up or down according to the CPU utilization of instances within its existing cluster. For more metrics and dimensions in CloudWatch, see <a class="reference external" href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ec2-metricscollected.html">Amazon Elastic Compute Cloud Dimensions and Metrics</a>.</p>
-<p>Raw code can be <a class="reference external" href="https://raw.githubusercontent.com/moleculea/autoscale_sample/master/autoscale_sample.py">downloaded here</a>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">boto.ec2</span>
-<span class="kn">from</span> <span class="nn">boto.ec2.autoscale</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AutoScalingGroup</span><span class="p">,</span>
-                                <span class="n">LaunchConfiguration</span><span class="p">,</span> <span class="n">ScalingPolicy</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">boto.ec2.cloudwatch</span> <span class="kn">import</span> <span class="n">MetricAlarm</span>
-
-
-<span class="c"># Create connections to Auto Scaling and CloudWatch</span>
-<span class="n">as_conn</span> <span class="o">=</span> <span class="n">boto</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">autoscale</span><span class="o">.</span><span class="n">connect_to_region</span><span class="p">(</span><span class="s">"us-east-1"</span><span class="p">)</span>
-<span class="n">cw_conn</span> <span class="o">=</span> <span class="n">boto</span><span class="o">.</span><span class="n">ec2</span><span class="o">.</span><span class="n">cloudwatch</span><span class="o">.</span><span class="n">connect_to_region</span><span class="p">(</span><span class="s">"us-east-1"</span><span class="p">)</span>
-
-<span class="c"># Name for auto scaling group and launch configuration</span>
-<span class="n">as_name</span> <span class="o">=</span> <span class="s">"VM1"</span>
-
-<span class="c"># Create launch configuration</span>
-<span class="n">lc</span> <span class="o">=</span> <span class="n">LaunchConfiguration</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span>
-                         <span class="n">image_id</span><span class="o">=</span><span class="s">"ami-76f0061f"</span><span class="p">,</span>  <span class="c"># AMI ID of your instance</span>
-                         <span class="n">key_name</span><span class="o">=</span><span class="s">"your_key_name"</span><span class="p">,</span>
-                         <span class="n">security_groups</span><span class="o">=</span><span class="s">"your_group_name"</span><span class="p">,</span>
-                         <span class="n">instance_type</span><span class="o">=</span><span class="s">"t1.micro"</span><span class="p">,</span>
-                         <span class="n">instance_monitoring</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-
-<span class="n">as_conn</span><span class="o">.</span><span class="n">create_launch_configuration</span><span class="p">(</span><span class="n">lc</span><span class="p">)</span>
-
-<span class="c"># Create Auto Scaling group</span>
-<span class="n">ag</span> <span class="o">=</span> <span class="n">AutoScalingGroup</span><span class="p">(</span><span class="n">group_name</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span>
-                      <span class="n">availability_zones</span><span class="o">=</span><span class="p">[</span><span class="s">"us-east-1b"</span><span class="p">],</span>
-                      <span class="n">launch_config</span><span class="o">=</span><span class="n">lc</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">max_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                      <span class="n">connection</span><span class="o">=</span><span class="n">as_conn</span><span class="p">)</span>
-
-<span class="n">as_conn</span><span class="o">.</span><span class="n">create_auto_scaling_group</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
-
-<span class="c"># Create scaling policies</span>
-<span class="n">scale_up_policy</span> <span class="o">=</span> <span class="n">ScalingPolicy</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s">'scale_up'</span><span class="p">,</span> <span class="n">adjustment_type</span><span class="o">=</span><span class="s">'ChangeInCapacity'</span><span class="p">,</span>
-    <span class="n">as_name</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span> <span class="n">scaling_adjustment</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cooldown</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
-
-<span class="n">scale_down_policy</span> <span class="o">=</span> <span class="n">ScalingPolicy</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s">'scale_down'</span><span class="p">,</span> <span class="n">adjustment_type</span><span class="o">=</span><span class="s">'ChangeInCapacity'</span><span class="p">,</span>
-    <span class="n">as_name</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span> <span class="n">scaling_adjustment</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">cooldown</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
-
-<span class="n">as_conn</span><span class="o">.</span><span class="n">create_scaling_policy</span><span class="p">(</span><span class="n">scale_up_policy</span><span class="p">)</span>
-<span class="n">as_conn</span><span class="o">.</span><span class="n">create_scaling_policy</span><span class="p">(</span><span class="n">scale_down_policy</span><span class="p">)</span>
-
-<span class="n">scale_up_policy</span> <span class="o">=</span> <span class="n">as_conn</span><span class="o">.</span><span class="n">get_all_policies</span><span class="p">(</span>
-    <span class="n">as_group</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span> <span class="n">policy_names</span><span class="o">=</span><span class="p">[</span><span class="s">'scale_up'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="n">scale_down_policy</span> <span class="o">=</span> <span class="n">as_conn</span><span class="o">.</span><span class="n">get_all_policies</span><span class="p">(</span>
-    <span class="n">as_group</span><span class="o">=</span><span class="n">as_name</span><span class="p">,</span> <span class="n">policy_names</span><span class="o">=</span><span class="p">[</span><span class="s">'scale_down'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="c"># Set dimensions for CloudWatch alarms</span>
-<span class="c"># Monitor on a specific instance</span>
-<span class="n">alarm_dimensions</span> <span class="o">=</span> <span class="p">{</span><span class="s">"InstanceId"</span><span class="p">:</span> <span class="s">"your_instance_id"</span><span class="p">}</span>
-
-<span class="c"># Monitor instances within the Auto Scaling group cluster</span>
-<span class="n">alarm_dimensions_as</span> <span class="o">=</span> <span class="p">{</span><span class="s">"AutoScalingGroupName"</span><span class="p">:</span> <span class="n">as_name</span><span class="p">}</span>
-
-<span class="c"># Create metric alarms</span>
-<span class="n">scale_up_alarm</span> <span class="o">=</span> <span class="n">MetricAlarm</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s">'scale_up_on_cpu_'</span> <span class="o">+</span> <span class="n">as_name</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s">'AWS/EC2'</span><span class="p">,</span>
-    <span class="n">metric</span><span class="o">=</span><span class="s">'CPUUtilization'</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s">'Average'</span><span class="p">,</span>
-    <span class="n">comparison</span><span class="o">=</span><span class="s">'&gt;'</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="s">"80"</span><span class="p">,</span>
-    <span class="n">period</span><span class="o">=</span><span class="s">'60'</span><span class="p">,</span> <span class="n">evaluation_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">alarm_actions</span><span class="o">=</span><span class="p">[</span><span class="n">scale_up_policy</span><span class="o">.</span><span class="n">policy_arn</span><span class="p">],</span>
-    <span class="n">dimensions</span><span class="o">=</span><span class="n">alarm_dimensions</span><span class="p">)</span>
-
-<span class="n">scale_down_alarm</span> <span class="o">=</span> <span class="n">MetricAlarm</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s">'scale_down_on_cpu_'</span> <span class="o">+</span> <span class="n">as_name</span><span class="p">,</span> <span class="n">namespace</span><span class="o">=</span><span class="s">'AWS/EC2'</span><span class="p">,</span>
-    <span class="n">metric</span><span class="o">=</span><span class="s">'CPUUtilization'</span><span class="p">,</span> <span class="n">statistic</span><span class="o">=</span><span class="s">'Average'</span><span class="p">,</span>
-    <span class="n">comparison</span><span class="o">=</span><span class="s">'&lt;'</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="s">"20"</span><span class="p">,</span>
-    <span class="n">period</span><span class="o">=</span><span class="s">'60'</span><span class="p">,</span> <span class="n">evaluation_periods</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">alarm_actions</span><span class="o">=</span><span class="p">[</span><span class="n">scale_down_policy</span><span class="o">.</span><span class="n">policy_arn</span><span class="p">],</span>
-    <span class="n">dimensions</span><span class="o">=</span><span class="n">alarm_dimensions</span><span class="p">)</span>
-
-<span class="c"># Create alarms in CloudWatch</span>
-<span class="n">cw_conn</span><span class="o">.</span><span class="n">create_alarm</span><span class="p">(</span><span class="n">scale_up_alarm</span><span class="p">)</span>
-<span class="n">cw_conn</span><span class="o">.</span><span class="n">create_alarm</span><span class="p">(</span><span class="n">scale_down_alarm</span><span class="p">)</span>
-</pre></div>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/python.html">Python</a>, <a href="tags/aws.html">AWS</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2013/10/25/amazon_ec2_auto_scaling_example.html#disqus_thread" data-disqus-identifier="2013/10/25/amazon_ec2_auto_scaling_example">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -638,6 +586,8 @@ $ chmod +x ~/.sleep ~/.wakeup
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
+        </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
@@ -655,8 +605,6 @@ $ chmod +x ~/.sleep ~/.wakeup
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
-        </li><li>
-            <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">

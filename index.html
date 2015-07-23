@@ -69,6 +69,67 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>July 22, 2015</span>
+        </div>
+        <div class="section">
+            <h1><a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a></h1>
+<div class="section" id="nice-value">
+<h2>nice value</h2>
+<p>On Linux, the nice value ranges from -20 to 19.</p>
+</div>
+<div class="section" id="nice-and-weight">
+<h2>nice and weight</h2>
+<p>In the Linux’s Completely Fair Scheduler (CFS), mapping of nice to weight of a process is critical to calculating the virtual runtime (<span class="docutils literal"><span class="pre">vruntime</span></span>) of its scheduler entity structure (<span class="docutils literal"><span class="pre">struct</span> <span class="pre">sched_entity</span></span>). In Linux 2.6.34, this is defined in <span class="docutils literal"><span class="pre">prio_to_weight</span></span> (<a class="reference external" href="https://github.com/torvalds/linux/blob/v2.6.34/kernel/sched.c#L1356">kernel/sched.c#L1356</a>). The weight is roughly equivalent to <span class="docutils literal"><span class="pre">1024/(1.25)^(nice)</span></span>:</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">prio_to_weight</span><span class="p">[</span><span class="mi">40</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+ <span class="cm">/* -20 */</span>     <span class="mi">88761</span><span class="p">,</span>     <span class="mi">71755</span><span class="p">,</span>     <span class="mi">56483</span><span class="p">,</span>     <span class="mi">46273</span><span class="p">,</span>     <span class="mi">36291</span><span class="p">,</span>
+ <span class="cm">/* -15 */</span>     <span class="mi">29154</span><span class="p">,</span>     <span class="mi">23254</span><span class="p">,</span>     <span class="mi">18705</span><span class="p">,</span>     <span class="mi">14949</span><span class="p">,</span>     <span class="mi">11916</span><span class="p">,</span>
+ <span class="cm">/* -10 */</span>      <span class="mi">9548</span><span class="p">,</span>      <span class="mi">7620</span><span class="p">,</span>      <span class="mi">6100</span><span class="p">,</span>      <span class="mi">4904</span><span class="p">,</span>      <span class="mi">3906</span><span class="p">,</span>
+ <span class="cm">/*  -5 */</span>      <span class="mi">3121</span><span class="p">,</span>      <span class="mi">2501</span><span class="p">,</span>      <span class="mi">1991</span><span class="p">,</span>      <span class="mi">1586</span><span class="p">,</span>      <span class="mi">1277</span><span class="p">,</span>
+ <span class="cm">/*   0 */</span>      <span class="mi">1024</span><span class="p">,</span>       <span class="mi">820</span><span class="p">,</span>       <span class="mi">655</span><span class="p">,</span>       <span class="mi">526</span><span class="p">,</span>       <span class="mi">423</span><span class="p">,</span>
+ <span class="cm">/*   5 */</span>       <span class="mi">335</span><span class="p">,</span>       <span class="mi">272</span><span class="p">,</span>       <span class="mi">215</span><span class="p">,</span>       <span class="mi">172</span><span class="p">,</span>       <span class="mi">137</span><span class="p">,</span>
+ <span class="cm">/*  10 */</span>       <span class="mi">110</span><span class="p">,</span>        <span class="mi">87</span><span class="p">,</span>        <span class="mi">70</span><span class="p">,</span>        <span class="mi">56</span><span class="p">,</span>        <span class="mi">45</span><span class="p">,</span>
+ <span class="cm">/*  15 */</span>        <span class="mi">36</span><span class="p">,</span>        <span class="mi">29</span><span class="p">,</span>        <span class="mi">23</span><span class="p">,</span>        <span class="mi">18</span><span class="p">,</span>        <span class="mi">15</span><span class="p">,</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nice-and-priority">
+<h2>nice and priority</h2>
+<p>The conversion between nice and static priority (priority for <span class="docutils literal"><span class="pre">SCHED_NORMAL</span></span>, or non-“real-time” tasks) is defined by the <span class="docutils literal"><span class="pre">NICE_TO_PRIO</span></span> and <span class="docutils literal"><span class="pre">PRIO_TO_NICE</span></span> macros. Before Linux 3.15, for example, 2.6.34, this is defined in <a class="reference external" href="https://github.com/torvalds/linux/blob/v2.6.34/kernel/sched.c#L89">kernel/sched.c</a>; since Linux 3.15, it is defined in <a class="reference external" href="https://github.com/torvalds/linux/blob/v4.1/include/linux/sched/prio.h#L32">include/linux/sched/prio.h</a>. The relation is literally <span class="docutils literal"><span class="pre">prio</span> <span class="pre">=</span> <span class="pre">nice</span> <span class="pre">+</span> <span class="pre">120</span></span>, so the priority ranges from 100 to 139.</p>
+<p>The following is the macro definition from the 2.6.34 source code</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cp">#define NICE_TO_PRIO(nice)  (MAX_RT_PRIO + (nice) + 20)</span>
+<span class="cp">#define PRIO_TO_NICE(prio)  ((prio) - MAX_RT_PRIO - 20)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="nice-value-and-rlimit-style-value">
+<h2>nice value and rlimit style value</h2>
+<p>In the recent man page on <a class="reference external" href="http://man7.org/linux/man-pages/man2/setpriority.2.html">setpriority(2)</a>, there is a formula <span class="docutils literal"><span class="pre">unice</span> <span class="pre">=</span> <span class="pre">20</span> <span class="pre">-</span> <span class="pre">knice</span></span> that converts “user” nice values (-20..19) to “kernel” nice values (40..1), which is said to be handled by glibc wrapper functions for <span class="docutils literal"><span class="pre">setpriority()</span></span> and <span class="docutils literal"><span class="pre">getpriority()</span></span> system calls. This seems vague in definition.</p>
+<p><a class="reference external" href="http://lxr.free-electrons.com/ident?v=3.16;i=nice_to_rlimit">Since Linux 3.16</a>, a new <cite>nice_to_rlimit</cite> function is added to <span class="docutils literal"><span class="pre">include/linux/sched/prio.h</span></span>, which seems to match the above description. This function converts nice value [19,-20] to rlimit style value [1,40]. The formula is equivalent to that on the man page. The <span class="docutils literal"><span class="pre">rlimit_to_nice</span></span> does the reverse operation.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">static</span> <span class="kr">inline</span> <span class="kt">long</span> <span class="nf">nice_to_rlimit</span><span class="p">(</span><span class="kt">long</span> <span class="n">nice</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">MAX_NICE</span> <span class="o">-</span> <span class="n">nice</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Here, <span class="docutils literal"><span class="pre">MAX_NICE</span></span> is defined to be 19, so it is essentially <span class="docutils literal"><span class="pre">rlimit</span> <span class="pre">=</span> <span class="pre">20</span> <span class="pre">-</span> <span class="pre">nice</span></span>.</p>
+<p>Note that the rlimit style value is not to be confused with “user priority” (<a class="reference external" href="https://github.com/torvalds/linux/blob/v4.1/include/linux/sched/prio.h#L40">include/linux/sched/prio.h#L40</a>), which has a range of 0 to 39.</p>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/linux.html">Linux</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html#disqus_thread" data-disqus-identifier="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>May 21, 2015</span>
         </div>
         <div class="section">
@@ -632,7 +693,7 @@ First, we reset and stop each node:</p>
 </div>
 <p>Then, put the following lines somewhere in your <span class="docutils literal"><span class="pre">~/.bash_profile</span></span>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c"># pyenv</span>
-<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
+<span class="nb">eval</span> <span class="s2">"$(pyenv init -)"</span>
 <span class="c"># virtualenvwrapper</span>
 <span class="nb">export </span><span class="nv">WORKON_HOME</span><span class="o">=</span>~/envs
 </pre></div>
@@ -694,55 +755,6 @@ First, we reset and stop each node:</p>
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2014/05/02/fixing_mongodb_against_unclean_shutdown.html#disqus_thread" data-disqus-identifier="2014/05/02/fixing_mongodb_against_unclean_shutdown">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>May 01, 2014</span>
-        </div>
-        <div class="section">
-            <h1><a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a></h1>
-<p>A Python integer is represented as either of 32-bit or 64-bit signed integer type that is platform-specific, without considering it as <a class="reference external" href="https://docs.python.org/2.7/c-api/int.html">an Python object</a>. As indicated in the documentation, whether it is 32-bit or 64-bit can be revealed by checking <span class="docutils literal"><span class="pre">sys.maxsize</span></span> (or <span class="docutils literal"><span class="pre">sys.maxint</span></span> on older CPython implementations such as 2.4), the value of which “is the largest positive integer supported by the platform’s <span class="docutils literal"><span class="pre">Py_ssize_t</span></span> type and is usually <span class="docutils literal"><span class="pre">2**31</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 32-bit platform and <span class="docutils literal"><span class="pre">2**63</span> <span class="pre">-</span> <span class="pre">1</span></span> on a 64-bit platform”. <a class="reference external" href="https://docs.python.org/2/library/sys.html">[1]</a> <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.maxsize">[2]</a>.</p>
-<p>The following function helps determine number of bits of an integer and returns either 64 or 32 by leveraging the variable discussed above:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
-
-
-<span class="k">def</span> <span class="nf">get_int_bits</span><span class="p">():</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">):</span>
-        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxint'</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">max_int</span> <span class="o">&gt;&gt;</span> <span class="mi">62</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">32</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">64</span>
-</pre></div>
-</div>
-<p>Check out the code on GitHub Gist from <a class="reference external" href="https://gist.github.com/shichao-an/b447d24f0a5381b0fa92">this link</a>.</p>
-<p><strong>Updated Jun 10, 2014</strong></p>
-<p>After an exploration of the <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#int.bit_length">built-in types</a>, it is clear that <span class="docutils literal"><span class="pre">int.bit_length</span></span> can be used more easily than bit manipulation.:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
-
-
-<span class="k">def</span> <span class="nf">get_int_bits</span><span class="p">():</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">):</span>
-        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxsize'</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">max_int</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">'maxint'</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">max_int</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-</pre></div>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/python.html">Python</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2014/05/01/get_number_of_bits_of_a_python_integer.html#disqus_thread" data-disqus-identifier="2014/05/01/get_number_of_bits_of_a_python_integer">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -751,6 +763,8 @@ First, we reset and stop each node:</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
+        </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
@@ -768,8 +782,6 @@ First, we reset and stop each node:</p>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
-        </li><li>
-            <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">

@@ -29,7 +29,7 @@
         <script src="_static/plugins.js"></script>
         <script src="_static/main.js"></script>
         
-  <link rel="prev" title="Newer" href="page4.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.html" />
+  <link rel="next" title="Older" href="page6.html" /><link rel="prev" title="Newer" href="page4.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.html" />
   <link rel="canonical" href="https://blog.shichao.io/page5.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
@@ -69,6 +69,45 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>October 29, 2012</span>
+        </div>
+        <div class="section">
+            <h1><a href="2012/10/29/hello_world_in_ocaml_with_eclipse.html">Hello World in OCaml with Eclipse</a></h1>
+<p>Assume Eclipse has been installed,</p>
+<ol class="arabic">
+<li><p class="first">Download and install OCaml (<a class="reference external" href="http://caml.inria.fr/download.en.html">http://caml.inria.fr/download.en.html</a>)</p>
+</li>
+<li><p class="first">Open Eclipse, Help -&gt; Install New Software, enter “<a class="reference external" href="http://www.algo-prog.info/ocaide/">http://www.algo-prog.info/ocaide/</a>” as repository site, and install this plugin. Restart Eclipse after finish.</p>
+</li>
+<li><p class="first">Turn the current perspective into OCaml by Window -&gt; Open Perspective.</p>
+</li>
+<li><p class="first">Then, create a new project named “ocaml_hello” by New -&gt; OCaml Project. And create a new Module named “ocaml_hello” or simply a file with .ml extension.</p>
+</li>
+<li><p class="first">Write the code:</p>
+<div class="highlight-ocaml"><div class="highlight"><pre><span class="n">print_string</span> <span class="s2">"Hello world!</span><span class="se">\n</span><span class="s2">"</span><span class="o">;;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Press F6 (Fn+F6 on Mac) or OCaml -&gt; Eval In Toplevel, and the console “OCaml Toplevel” at the bottom will output results.</p>
+<p><img alt="s1" src="_images/Screen-Shot-2012-10-29-at-5.14.14-PM.png"/></p>
+<p><img alt="s2" src="_images/Screen-Shot-2012-10-29-at-5.15.16-PM.png"/></p>
+</li>
+</ol>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/ocaml.html">OCaml</a>, <a href="tags/eclipse.html">Eclipse</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2012/10/29/hello_world_in_ocaml_with_eclipse.html#disqus_thread" data-disqus-identifier="2012/10/29/hello_world_in_ocaml_with_eclipse">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>October 26, 2012</span>
         </div>
         <div class="section">
@@ -152,7 +191,7 @@
         </div>
         <div class="section">
             <h1><a href="2012/10/04/progress_speed_indicator_for_urlretrieve_in_python.html">Progress/speed indicator for urlretrieve() in Python</a></h1>
-<p>A simple <span class="docutils literal"><span class="pre">reporthook()</span></span> function for <a class="reference external" href="http://docs.python.org/2/library/urllib.html#urllib.urlretrieve" title="(in Python v2.7)"><span class="xref py py-func docutils literal"><span class="pre">urllib.urlretrieve()</span></span></a>‘s reporthook argument:</p>
+<p>A simple <span class="docutils literal"><span class="pre">reporthook()</span></span> function for <span class="xref py py-func docutils literal"><span class="pre">urllib.urlretrieve()</span></span>‘s reporthook argument:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
@@ -357,98 +396,16 @@
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2011/09/24/fixing_flash_disk.html#disqus_thread" data-disqus-identifier="2011/09/24/fixing_flash_disk">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>August 19, 2011</span>
-        </div>
-        <div class="section">
-            <h1><a href="2011/08/19/installing_pywikipedia_on_windows.html">Windows下安装Pywikipediabot</a></h1>
-<p>很早就想在MediaWiki上使用bot，但一直没有去关注。MediaWiki上的bot实现有很多途径，.NET，perl，java都有，但是貌似python最容易。于是选择了PyWikipediaBot。网上关于Pywikipedia中文的资料比较少，所以就自己按照meta-wiki上的Pywikipedia的instruction中的步骤进行安装，比较简单。</p>
-<p>meta-wiki安装指南：<a class="reference external" href="http://meta.wikimedia.org/wiki/Pywikipediabot/Installation">http://meta.wikimedia.org/wiki/Pywikipediabot/Installation</a> （这个有中文版翻译）</p>
-<p>安装环境：</p>
-<p>Windows 7 Ultimate + Python 2.7 (pywikipedia不支持Python 3.X)</p>
-<p>MediaWiki 1.16.2 ，单语言（简体中文）</p>
-<p>1.下载Pywikipedia。</p>
-<p>手动下载或者TortoiseSVN都可以，后者的好处是升级方便。</p>
-<p>手动下载PyWikipediaBot Nightlies：<a class="reference external" href="http://toolserver.org/~pywikipedia/nightly/">http://toolserver.org/~pywikipedia/nightly/</a></p>
-<p>随便选一个：<a class="reference external" href="http://toolserver.org/~pywikipedia/nightly/package/pywikipedia/pywikipedia-nightly.7z">http://toolserver.org/~pywikipedia/nightly/package/pywikipedia/pywikipedia-nightly.7z</a></p>
-<p>TortoiseSVN：<a class="reference external" href="http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/">http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia/</a></p>
-<ol class="arabic simple" start="2">
-<li>设置快捷键。</li>
-</ol>
-<p>Linux下直接export一个变量就行了：</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">PYTHONPATH=$PYTHONPATH:~/pywikipedia/</span>
-<span class="go">export PYTHONPATH</span>
-</pre></div>
-</div>
-<p>Windows下简单的方法就是：为pywikipedia目录创建快捷方式，然后编辑属性，目标写cmd.exe，起始位置写该目录的路径，确定后单击该快捷方式可以直接进入cmd并且在该目录下</p>
-<ol class="arabic simple" start="3">
-<li>配置。</li>
-</ol>
-<p>参考 <a class="reference external" href="http://meta.wikimedia.org/wiki/Pywikipediabot/Use_on_non-Wikimedia_wikis">http://meta.wikimedia.org/wiki/Pywikipediabot/Use_on_non-Wikimedia_wikis</a>。</p>
-<p>按照安装指南，应该先创建family.py，再创建user-config.py。</p>
-<p>3.1. 创建yourwiki_family.py，直接在/families中现成的py文件中选择一个，复制并修改即可，我改的就是最简单的“mozilla_family.py”，文件命名为“你wiki的名字_family.py”：</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8  -*-</span>
-
-<span class="kn">import</span> <span class="nn">family</span>
-
-<span class="k">class</span> <span class="nc">Family</span><span class="p">(</span><span class="n">family</span><span class="o">.</span><span class="n">Family</span><span class="p">):</span>
-
-     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-         <span class="n">family</span><span class="o">.</span><span class="n">Family</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">'yourwiki'</span> <span class="c"># 设置family名称，就是“你wiki的名字”（文件名下划线前面的部分）</span>
-         <span class="bp">self</span><span class="o">.</span><span class="n">langs</span> <span class="o">=</span> <span class="p">{</span>
-             <span class="s">'en'</span><span class="p">:</span> <span class="s">'localhost'</span><span class="p">,</span> <span class="c"># 语言和主机名。语言设成en即可（之前一直登录失败就是在这写成了zh-cn，后来改成en后可用了）</span>
-         <span class="p">}</span>
-
-         <span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-             <span class="s">'_default'</span><span class="p">:</span> <span class="s">u'YourWiki'</span><span class="p">,</span> <span class="c">#  计划页面的命名空间，一般就是LocalSettings.php中的$Sitename的值</span>
-         <span class="p">}</span>
-
-         <span class="bp">self</span><span class="o">.</span><span class="n">namespaces</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-             <span class="s">'_default'</span><span class="p">:</span> <span class="s">u'YourWiki talk'</span><span class="p">,</span> <span class="c"># 计划页面讨论页的命名空间</span>
-         <span class="p">}</span>
-
-     <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
-         <span class="k">return</span> <span class="s">"1.16.1"</span>  <span class="c"># MediaWiki版本号，这个貌似不重要</span>
-
-     <span class="k">def</span> <span class="nf">scriptpath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
-         <span class="k">return</span> <span class="s">'/wiki'</span> <span class="c"># index.php, api.php的脚步相对路径，这个和你wiki所在具体路有关，比如你的MediaWiki在/wiki目录下，那么这里就写“/wiki”</span>
-</pre></div>
-</div>
-<p class="readmorewrapper"><a class="readmore" href="2011/08/19/installing_pywikipedia_on_windows.html#more">Read more...</a></p> 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/windows.html">Windows</a>, <a href="tags/python.html">Python</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2011/08/19/installing_pywikipedia_on_windows.html#disqus_thread" data-disqus-identifier="2011/08/19/installing_pywikipedia_on_windows">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
             <li class="left"> &laquo; <a href="page4.html">Newer</a></li>
-            <li class="right"></li>
+            <li class="right"><a href="page6.html">Older</a> &raquo; </li>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
+        </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
@@ -466,8 +423,6 @@
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
-        </li><li>
-            <a href="2014/05/01/get_number_of_bits_of_a_python_integer.html">Get number of bits of a Python integer</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
