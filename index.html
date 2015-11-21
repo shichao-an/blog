@@ -133,7 +133,7 @@
             <span>May 21, 2015</span>
         </div>
         <div class="section">
-            <h1><a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a></h1>
+            <h1><a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a></h1>
 <p>The last few posts discussed <a class="reference external" href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu">setting up an OpenLDAP server</a> and <a class="reference external" href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu">configuring basic client server</a>. However, that client server uses <a class="reference external" href="http://packages.ubuntu.com/trusty/libnss-ldap">nss-ldap</a> with some known issues <a class="reference external" href="https://wiki.debian.org/LDAP/NSS#Configuring_LDAP_Authentication">as presented here</a>.  With this old and seemingly buggy setup, I simply can’t make <cite>nss_initgroups_ignoreuses</cite> option work to bypass querying the LDAP server when authenticating local or system users on the server, and have no idea what <span class="docutils literal"><span class="pre">nssldap-update-ignoreusers</span></span> command actually does. When the LDAP server is down or there is network issues connecting the LDAP server, the default configuration will simply block local users from logging in the server (at least for a long time until the query is considered timed out). Also, as I found after checking <span class="docutils literal"><span class="pre">/var/log/auth.log</span></span>, it queries the LDAP server even when doing a Bash completion, because it was very slow when I pressed the TAB key after a path name. Setting <cite>bind_policy</cite> option to soft and  <cite>timelimit</cite> and <cite>bind_timelimit</cite> to smaller values may just alleviate the symptom but does not solve the problem.</p>
 <p>So I decide to use nss-ldapd that comes with the <span class="docutils literal"><span class="pre">libnss-ldapd</span></span> package.</p>
 <div class="highlight-python"><div class="highlight"><pre>apt-get install libpam-ldap nscd ldap-utils libnss-ldapd
@@ -232,8 +232,8 @@ timelimit 3
             <span>April 19, 2015</span>
         </div>
         <div class="section">
-            <h1><a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a></h1>
-<p>This post documents how to setup an OpenLDAP client server (Ubuntu 14.04) that can make its OpenSSH server to load authorized keys from a pre-configured OpenLDAP server with <span class="docutils literal"><span class="pre">ldaps://</span></span> available (discussed in the <a class="reference internal" href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html"><em>previous post</em></a>, please read this first if you haven’t). Users are able to SSH access this client server, while their SSH public keys are stored on the OpenLDAP server. The SSH authentication process on the client server is mainly facilitated by <a class="reference external" href="https://github.com/jirutka/ssh-ldap-pubkey">ssh-ldap-pubkey</a>.</p>
+            <h1><a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setting up OpenLDAP client server with SSH access on Ubuntu 14.04</a></h1>
+<p>This post documents how to set up an OpenLDAP client server (Ubuntu 14.04) that can make its OpenSSH server to load authorized keys from a pre-configured OpenLDAP server with <span class="docutils literal"><span class="pre">ldaps://</span></span> available (discussed in the <a class="reference internal" href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html"><em>previous post</em></a>, please read this first if you haven’t). Users are able to SSH access this client server, while their SSH public keys are stored on the OpenLDAP server. The SSH authentication process on the client server is mainly facilitated by <a class="reference external" href="https://github.com/jirutka/ssh-ldap-pubkey">ssh-ldap-pubkey</a>.</p>
 <div class="section" id="script">
 <h2>Script</h2>
 <ul class="simple">
@@ -337,8 +337,8 @@ lines. Replace <span class="docutils literal"><span class="pre">ldap-team</span>
             <span>April 17, 2015</span>
         </div>
         <div class="section">
-            <h1><a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a></h1>
-<p>This post documents how to setup a secure OpenLDAP server that is able to make OpenLDAP client servers accept authorized SSH access requests from users.
+            <h1><a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setting up OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a></h1>
+<p>This post documents how to set up a secure OpenLDAP server that is able to make OpenLDAP client servers accept authorized SSH access requests from users.
 The following steps assume the OpenLDAP server (slapd) and phpLDAPadmin are installed as referenced in the <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-a-basic-ldap-server-on-an-ubuntu-12-04-vps">initial setup</a>.</p>
 <div class="section" id="instructions-and-references">
 <h2>Instructions and references</h2>
@@ -672,7 +672,7 @@ First, we reset and stop each node:</p>
             <span>October 01, 2014</span>
         </div>
         <div class="section">
-            <h1><a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a></h1>
+            <h1><a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a></h1>
 <p>Typically on OS X, I’m prone to use <a class="reference external" href="https://github.com/yyuu/pyenv">pyenv</a> to manage multiple Python versions, particularly 2.7 and 3.3. I always keep the 2.7.x Python (system version) that ships with OS X, and install extra versions using pyenv, and develop under virtualenvs. It seems <a class="reference external" href="https://github.com/pypa/virtualenv/">virtualenv</a> and <a class="reference external" href="https://bitbucket.org/dhellmann/virtualenvwrapper/">virtualenvwrapper</a> do not natively work well with pyenv’s shims when creating new virtualenvs, and it also seems the author of pyenv already gives the solution, <a class="reference external" href="https://github.com/yyuu/pyenv-virtualenvwrapper">pyenv-virtualenvwrapper</a>.</p>
 <p>As an essential record, install Python 3.4.1 using pyenv (for installation of pyenv itself, see its <a class="reference external" href="https://github.com/yyuu/pyenv">documentation</a>) and enable it globally, along with the system version.</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ pyenv install 3.4.1</span>
@@ -693,7 +693,7 @@ First, we reset and stop each node:</p>
 </div>
 <p>Then, put the following lines somewhere in your <span class="docutils literal"><span class="pre">~/.bash_profile</span></span>:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c"># pyenv</span>
-<span class="nb">eval</span> <span class="s2">"$(pyenv init -)"</span>
+<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
 <span class="c"># virtualenvwrapper</span>
 <span class="nb">export </span><span class="nv">WORKON_HOME</span><span class="o">=</span>~/envs
 </pre></div>
@@ -765,13 +765,13 @@ First, we reset and stop each node:</p>
     <ul><li>
             <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
-            <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setup nss-ldapd on Ubuntu 14.04</a>
+            <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
-            <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+            <a href="2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setting up OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
-            <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+            <a href="2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setting up OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
             <a href="2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
@@ -779,7 +779,7 @@ First, we reset and stop each node:</p>
         </li><li>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
-            <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
+            <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li></ul>

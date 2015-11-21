@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Personal Blogging Site of Shichao An">
         <meta name="viewport" content="width=device-width">
-        <title>Setup nss-ldapd on Ubuntu 14.04 &mdash; Shichao&#39;s Blog</title>
+        <title>Setting up nss-ldapd on Ubuntu 14.04 &mdash; Shichao&#39;s Blog</title>
             <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
@@ -71,8 +71,8 @@
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>May 21, 2015</span>
         </div>
-    <div class="section" id="setup-nss-ldapd-on-ubuntu-14-04">
-<h1>Setup nss-ldapd on Ubuntu 14.04</h1>
+    <div class="section" id="setting-up-nss-ldapd-on-ubuntu-14-04">
+<h1>Setting up nss-ldapd on Ubuntu 14.04</h1>
 <p>The last few posts discussed <a class="reference external" href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu">setting up an OpenLDAP server</a> and <a class="reference external" href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu">configuring basic client server</a>. However, that client server uses <a class="reference external" href="http://packages.ubuntu.com/trusty/libnss-ldap">nss-ldap</a> with some known issues <a class="reference external" href="https://wiki.debian.org/LDAP/NSS#Configuring_LDAP_Authentication">as presented here</a>.  With this old and seemingly buggy setup, I simply can&#8217;t make <cite>nss_initgroups_ignoreuses</cite> option work to bypass querying the LDAP server when authenticating local or system users on the server, and have no idea what <span class="docutils literal"><span class="pre">nssldap-update-ignoreusers</span></span> command actually does. When the LDAP server is down or there is network issues connecting the LDAP server, the default configuration will simply block local users from logging in the server (at least for a long time until the query is considered timed out). Also, as I found after checking <span class="docutils literal"><span class="pre">/var/log/auth.log</span></span>, it queries the LDAP server even when doing a Bash completion, because it was very slow when I pressed the TAB key after a path name. Setting <cite>bind_policy</cite> option to soft and  <cite>timelimit</cite> and <cite>bind_timelimit</cite> to smaller values may just alleviate the symptom but does not solve the problem.</p>
 <p>So I decide to use nss-ldapd that comes with the <span class="docutils literal"><span class="pre">libnss-ldapd</span></span> package.</p>
 <div class="highlight-python"><div class="highlight"><pre>apt-get install libpam-ldap nscd ldap-utils libnss-ldapd
@@ -131,13 +131,13 @@ timelimit 3
     <ul><li>
             <a href="../../07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
-            <a href="#">Setup nss-ldapd on Ubuntu 14.04</a>
+            <a href="#">Setting up nss-ldapd on Ubuntu 14.04</a>
         </li><li>
             <a href="../../04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
-            <a href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setup OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+            <a href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setting up OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setup OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+            <a href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setting up OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
             <a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
@@ -145,7 +145,7 @@ timelimit 3
         </li><li>
             <a href="../../../2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
-            <a href="../../../2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setup virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
+            <a href="../../../2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
         </li><li>
             <a href="../../../2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li></ul>
