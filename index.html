@@ -69,6 +69,40 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>December 13, 2015</span>
+        </div>
+        <div class="section">
+            <h1><a href="2015/12/13/personal_hotspot_backup_plan.html">Personal Hotspot Backup Plan</a></h1>
+<p>Although I have bought two ISPs for Internet access at home and have set up a dual WAN router to use them, it often sucks at busy nights when both ISPs churn me up with an over 80% packet loss for several hours due to a range of crappy outbound nodes of AT&amp;T. These can be easily observed with <span class="docutils literal"><span class="pre">mtr</span></span> and <span class="docutils literal"><span class="pre">ping</span></span>. In short, I simply cannot use the Internet with a normal mood.</p>
+<p>Therefore, I decided to make use of the LTE network of my iPhone via personal hotspot. The problem is to connect to the hotspot from my primary MacBook Pro (named ASC-MBP) while maintaining access to existing home network (named TOKI-MASTER), since I need accessing the NAS. The obvious way is to hack the routing table, so I wrote the following two scripts, along with a backup plan.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-switch-default-route">switch-default-route</a></li>
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-restore-default-route">restore-default-route</a></li>
+</ul>
+<p>When Internet (both ISP) are down or unstable, do the following:</p>
+<p>On ASC-MBP, where Ethernet is plugged to TOKI-MASTER (10.0.1.1):</p>
+<ol class="arabic simple">
+<li>On iPhone 6, turn on Personal Hotspot</li>
+<li>On ASC-MBP, turn on Wi-Fi, and connect to ASC-IPHONE6</li>
+<li>On ASC-MBP, run command “switch-default-route”</li>
+<li>If Internet is back up, turn off Wi-Fi, run command “restore-default-route”</li>
+</ol>
+<p>By default, the iPhone Hotspot’s gateway address is 172.20.10.1, which is why it is in the script.</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/os_x.html">OS X</a>, <a href="tags/network.html">Network</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html#disqus_thread" data-disqus-identifier="2015/12/13/personal_hotspot_backup_plan">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>July 22, 2015</span>
         </div>
         <div class="section">
@@ -722,39 +756,6 @@ First, we reset and stop each node:</p>
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html#disqus_thread" data-disqus-identifier="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>May 02, 2014</span>
-        </div>
-        <div class="section">
-            <h1><a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a></h1>
-<p>It’s been a while since I maintained one of my servers that host an old project. After I got an HTTP 500 in an occasional case, I logged in to check what happened, only to find MongoDB is down. Running <span class="docutils literal"><span class="pre">service</span> <span class="pre">mongod</span> <span class="pre">restart</span></span> does not work. The MongoDB log indicates “Unclean shutdown detected.”</p>
-<p>After a search on Google, here’s what I did to fix that:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># grep dbpath /etc/mongod.conf</span>
-<span class="go">dbpath=/var/lib/mongo</span>
-<span class="go"># rm /var/lib/mongo/mongod.lock</span>
-<span class="go"># mongod --repair --dbpath /var/lib/mongo</span>
-</pre></div>
-</div>
-<p>At this point, you will see that MongoDB is running the repair process. If you immediately start MongoDB server after that, it still fails, because some permissions in /var/lib/mongo have been changed. You have to recover owner and group of those files back to “mongod” and then start the service:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># chown -R mongod:mongod /var/lib/mongo</span>
-<span class="go"># service mongod restart</span>
-</pre></div>
-</div>
-<p>Finally note that this is an CentOS server. If you use MongoDB on Ubuntu, some namings may be different.</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/mongodb.html">MongoDB</a>, <a href="tags/linux.html">Linux</a>, <a href="tags/centos.html">CentOS</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2014/05/02/fixing_mongodb_against_unclean_shutdown.html#disqus_thread" data-disqus-identifier="2014/05/02/fixing_mongodb_against_unclean_shutdown">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -763,6 +764,8 @@ First, we reset and stop each node:</p>
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/12/13/personal_hotspot_backup_plan.html">Personal Hotspot Backup Plan</a>
+        </li><li>
             <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
@@ -780,8 +783,6 @@ First, we reset and stop each node:</p>
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
-        </li><li>
-            <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -813,11 +814,11 @@ First, we reset and stop each node:</p>
       <a href="tags/linux.html" style="font-size: 20pt">Linux</a>&nbsp;&nbsp;
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
-      <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/network.html" style="font-size: 12pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
       <a href="tags/openldap.html" style="font-size: 10pt">OpenLDAP</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 18pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;

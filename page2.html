@@ -69,6 +69,39 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>May 02, 2014</span>
+        </div>
+        <div class="section">
+            <h1><a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a></h1>
+<p>It’s been a while since I maintained one of my servers that host an old project. After I got an HTTP 500 in an occasional case, I logged in to check what happened, only to find MongoDB is down. Running <span class="docutils literal"><span class="pre">service</span> <span class="pre">mongod</span> <span class="pre">restart</span></span> does not work. The MongoDB log indicates “Unclean shutdown detected.”</p>
+<p>After a search on Google, here’s what I did to fix that:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># grep dbpath /etc/mongod.conf</span>
+<span class="go">dbpath=/var/lib/mongo</span>
+<span class="go"># rm /var/lib/mongo/mongod.lock</span>
+<span class="go"># mongod --repair --dbpath /var/lib/mongo</span>
+</pre></div>
+</div>
+<p>At this point, you will see that MongoDB is running the repair process. If you immediately start MongoDB server after that, it still fails, because some permissions in /var/lib/mongo have been changed. You have to recover owner and group of those files back to “mongod” and then start the service:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># chown -R mongod:mongod /var/lib/mongo</span>
+<span class="go"># service mongod restart</span>
+</pre></div>
+</div>
+<p>Finally note that this is an CentOS server. If you use MongoDB on Ubuntu, some namings may be different.</p>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/mongodb.html">MongoDB</a>, <a href="tags/linux.html">Linux</a>, <a href="tags/centos.html">CentOS</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2014/05/02/fixing_mongodb_against_unclean_shutdown.html#disqus_thread" data-disqus-identifier="2014/05/02/fixing_mongodb_against_unclean_shutdown">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>May 01, 2014</span>
         </div>
         <div class="section">
@@ -538,46 +571,6 @@ $ chmod +x ~/.sleep ~/.wakeup
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2013/11/10/wake_suspend_machines_local_ethernet.html#disqus_thread" data-disqus-identifier="2013/11/10/wake_suspend_machines_local_ethernet">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>November 05, 2013</span>
-        </div>
-        <div class="section">
-            <h1><a href="2013/11/05/apache_name_based_virtual_hosts.html">Apache name-based virtual hosts and reverse DNS</a></h1>
-<p>On some operating systems such as Ubuntu, you can setup virtual hosts quite easily with the default Apache server (installed with APT). The global configuration file /etc/apache2/apache2.conf contains the following line as the last line by default:</p>
-<div class="highlight-apache"><div class="highlight"><pre><span class="nb">Include</span> sites-enabled/
-</pre></div>
-</div>
-<p>This means all virtual hosts configurations are loaded from the /etc/apache2/sites-enabled directory in alphabetical order. If you list this directory, you will find there is already a symbolic link 000-default that points to /etc/apache2/sites-available/default. This default virtual host configuration file does not contain a <span class="docutils literal"><span class="pre">ServerName</span></span> directive, and neither does the global configuration file (/etc/apache2/apache2.conf) by default. The default port.conf contains the following line:</p>
-<div class="highlight-apache"><div class="highlight"><pre><span class="nb">NameVirtualHost</span> *:80
-</pre></div>
-</div>
-<p>This means all the following name-virtual hosts will follow this <span class="docutils literal"><span class="pre">NameVirtualHost</span></span> directive, which receives requests on all interfaces on the server. <sup>[1]</sup></p>
-<p>Basically, you can place your own virtual host configuration file in /etc/apache2/sites-available directory and use the a2ensite command to enable this configuration (by creating a symbolic link at /etc/apache2/sites-enabled that Apache will load). If you owns a domain example.com and a subdomain wiki.example.com that both points to the IP address of this server, you can create a virtual host with <span class="docutils literal"><span class="pre">ServerName</span> <span class="pre">wiki.example.com</span></span> (the argument to <span class="docutils literal"><span class="pre">&lt;VirtualHost&gt;</span></span> is *:80 in this case). If the configuration filename is wiki, you can use a2ensite wiki command to enable it.</p>
-<p>Given these, let’s see how Apache handles requests for virtual hosts. When a request arrives, the server will find the best (most specific) matching <span class="docutils literal"><span class="pre">&lt;VirtualHost&gt;</span></span> argument based on the IP address and port used by the request. If there is more than one virtual host containing this best-match address and port combination, Apache will further compare the <span class="docutils literal"><span class="pre">ServerName</span></span> and <span class="docutils literal"><span class="pre">ServerAlias</span></span> directives to the server name present in the request. <sup>[2]</sup></p>
-<p>If you try to visit wiki.example.com you actually request the IP of this server. The Apache server will handle this request by comparing active virtual host configurations. It first checks 000-default, but detects no <span class="docutils literal"><span class="pre">ServerName</span></span> directive (neither does the global configuration as mentioned before). As a result, it performs a reverse DNS lookup to find the <span class="docutils literal"><span class="pre">ServerName</span></span>. <sup>[3]</sup> If you have not setup a reverse DNS for this IP to wiki.example.com, the match will fail and Apache continues to match the next virtual host, wiki, which does have a <span class="docutils literal"><span class="pre">ServerName</span></span>, wiki.example.com, and this is a match. Apache will respond with this virtual host.</p>
-<p>However, if you have recently setup a reverse DNS for IP of your server to wiki.example.com, a different result will come out. When you access wiki.example.com, Apache first checks 000-default, and performs a reverse DNS resolution only to find wiki.example.com as the result for <span class="docutils literal"><span class="pre">ServerName</span></span>, and this is a match. Apache will respond with 000-default instead of wiki and you will browse Web page for 000-default rather than wiki. To solve this problem, you can either set a global <span class="docutils literal"><span class="pre">ServerName</span></span> with example.com at /etc/apache2/apache2.conf or specify a <span class="docutils literal"><span class="pre">ServerName</span></span> for 000-default. In this way, the Apache will match the right <span class="docutils literal"><span class="pre">ServerName</span></span> with your request even if you setup a reverse DNS for one of the virtual hosts.</p>
-<div class="section" id="reference">
-<h2>Reference</h2>
-<ol class="arabic simple">
-<li><a class="reference external" href="http://httpd.apache.org/docs/2.2/mod/core.html#namevirtualhost">http://httpd.apache.org/docs/2.2/mod/core.html#namevirtualhost</a></li>
-<li><a class="reference external" href="http://httpd.apache.org/docs/current/vhosts/name-based.html">http://httpd.apache.org/docs/current/vhosts/name-based.html</a></li>
-<li><a class="reference external" href="http://httpd.apache.org/docs/current/dns-caveats.html">http://httpd.apache.org/docs/current/dns-caveats.html</a></li>
-</ol>
-</div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/apache.html">Apache</a>, <a href="tags/network.html">Network</a>, <a href="tags/dns.html">DNS</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2013/11/05/apache_name_based_virtual_hosts.html#disqus_thread" data-disqus-identifier="2013/11/05/apache_name_based_virtual_hosts">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -586,6 +579,8 @@ $ chmod +x ~/.sleep ~/.wakeup
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/12/13/personal_hotspot_backup_plan.html">Personal Hotspot Backup Plan</a>
+        </li><li>
             <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
@@ -603,8 +598,6 @@ $ chmod +x ~/.sleep ~/.wakeup
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
-        </li><li>
-            <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -636,11 +629,11 @@ $ chmod +x ~/.sleep ~/.wakeup
       <a href="tags/linux.html" style="font-size: 20pt">Linux</a>&nbsp;&nbsp;
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
-      <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/network.html" style="font-size: 12pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
       <a href="tags/openldap.html" style="font-size: 10pt">OpenLDAP</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 18pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;

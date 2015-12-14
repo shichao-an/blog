@@ -15,7 +15,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="Personal Blogging Site of Shichao An">
         <meta name="viewport" content="width=device-width">
-        <title>推荐两个用于往国内翻的VPN &mdash; Shichao&#39;s Blog</title>
+        <title>Personal Hotspot Backup Plan &mdash; Shichao&#39;s Blog</title>
             <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
             <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
@@ -29,8 +29,8 @@
         <script src="../../../_static/plugins.js"></script>
         <script src="../../../_static/main.js"></script>
         
-  <link rel="next" title="代码行统计工具 CLOC" href="../../04/30/count_lines_of_code_with_cloc.html" /><link rel="prev" title="Display desktop on iPad using Air Display over USB tethering" href="../../09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
-  <link rel="canonical" href="https://blog.shichao.io/2012/07/31/recommended_vpn_providers_in_china.html" /><script type="text/javascript">
+  <link rel="next" title="Relationships among nice, priority and weight in Linux kernel" href="../../07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" />
+  <link rel="canonical" href="https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
         VERSION:     '1.5',
@@ -69,15 +69,25 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
-            <span>July 31, 2012</span>
+            <span>December 13, 2015</span>
         </div>
-    <div class="section" id="vpn">
-<h1>推荐两个用于往国内翻的VPN</h1>
-<p>非凡VPN（vpn123）和91vpn（n个代理网站，官网貌似木有域名是个ip地址）</p>
-<p>还没有使用，初步查了一下。</p>
-<p>共同的特点就是标题所示的，他们都有国内节点，适用于在国外的同学使用，用于访问国内的一些视频网站、CNTV以及其他用处（据说国外IP无法使用U盾之类验证的国内网上银行）。</p>
-<p>前者做的比较实在，windows客户端界面比较好，支持PPTP、L2TP和OpenVPN，购买后可以查看服务器列表，因此可以比较方便的配置iPad/iPhone/Android，Windows 7下也可以通过配置VPN连接。而且提供测试账号。刚刚测试了一下美国测试节点，还可以，看youtube标清视频还算流畅。</p>
-<p>后者貌似用的人更多，代理商也多，淘宝上就好多。支持PPTP、L2TP。声称全球3000多台服务器，但貌似不公布服务器列表（当然肯定有办法获得），网站上只说明了windows客户端的使用。</p>
+    <div class="section" id="personal-hotspot-backup-plan">
+<h1>Personal Hotspot Backup Plan</h1>
+<p>Although I have bought two ISPs for Internet access at home and have set up a dual WAN router to use them, it often sucks at busy nights when both ISPs churn me up with an over 80% packet loss for several hours due to a range of crappy outbound nodes of AT&amp;T. These can be easily observed with <span class="docutils literal"><span class="pre">mtr</span></span> and <span class="docutils literal"><span class="pre">ping</span></span>. In short, I simply cannot use the Internet with a normal mood.</p>
+<p>Therefore, I decided to make use of the LTE network of my iPhone via personal hotspot. The problem is to connect to the hotspot from my primary MacBook Pro (named ASC-MBP) while maintaining access to existing home network (named TOKI-MASTER), since I need accessing the NAS. The obvious way is to hack the routing table, so I wrote the following two scripts, along with a backup plan.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-switch-default-route">switch-default-route</a></li>
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-restore-default-route">restore-default-route</a></li>
+</ul>
+<p>When Internet (both ISP) are down or unstable, do the following:</p>
+<p>On ASC-MBP, where Ethernet is plugged to TOKI-MASTER (10.0.1.1):</p>
+<ol class="arabic simple">
+<li>On iPhone 6, turn on Personal Hotspot</li>
+<li>On ASC-MBP, turn on Wi-Fi, and connect to ASC-IPHONE6</li>
+<li>On ASC-MBP, run command &#8220;switch-default-route&#8221;</li>
+<li>If Internet is back up, turn off Wi-Fi, run command &#8220;restore-default-route&#8221;</li>
+</ol>
+<p>By default, the iPhone Hotspot&#8217;s gateway address is 172.20.10.1, which is why it is in the script.</p>
 </div>
 
     <div class="postmeta">
@@ -88,27 +98,27 @@
         <div class="tags">
             <span>
                 Tags:
-                <a href="../../../tags/vpn.html">VPN</a></span>
+                <a href="../../../tags/os_x.html">OS X</a>, <a href="../../../tags/network.html">Network</a></span>
         </div>
         </div><ul class="related clearfix">
-            <li class="left"> &laquo; <a href="../../09/22/display_desktop_on_ipad_using_air_display_over_usb_tethering.html">Display desktop on iPad using Air Display over USB tethering</a></li>
-            <li class="right"><a href="../../04/30/count_lines_of_code_with_cloc.html">代码行统计工具 CLOC</a> &raquo; </li>
-        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2012/07/31/recommended_vpn_providers_in_china";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
+            <li class="left"></li>
+            <li class="right"><a href="../../07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a> &raquo; </li>
+        </ul><div id="disqus_thread"></div><script type="text/javascript">    var disqus_shortname = "shichaosblog";    var disqus_identifier = "2015/12/13/personal_hotspot_backup_plan";    disqus_thread();</script><noscript>Please enable JavaScript to view the    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="../../../2015/12/13/personal_hotspot_backup_plan.html">Personal Hotspot Backup Plan</a>
+            <a href="#">Personal Hotspot Backup Plan</a>
         </li><li>
-            <a href="../../../2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
+            <a href="../../07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
-            <a href="../../../2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
+            <a href="../../05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
+            <a href="../../04/22/auditing_user_tty_and_root_commands_with_auditd_on_ubuntu.html">Auditing user TTY and root commands with auditd on Ubuntu</a>
         </li><li>
-            <a href="../../../2015/04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setting up OpenLDAP client server with SSH access on Ubuntu 14.04</a>
+            <a href="../../04/19/setup_openldap_client_server_with_ssh_access_on_ubuntu.html">Setting up OpenLDAP client server with SSH access on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setting up OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
+            <a href="../../04/17/setup_openldap_server_with_openssh_lpk_on_ubuntu.html">Setting up OpenLDAP server with OpenSSH-LPK on Ubuntu 14.04</a>
         </li><li>
-            <a href="../../../2015/01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
+            <a href="../../01/06/tunneling_rdp_over_ssh_with_xrdp_and_xfreerdp.html">Tunneling RDP over SSH with xrdp and xfreerdp</a>
         </li><li>
             <a href="../../../2014/12/22/rabbitmq_clustering_and_high_availability_on_ubuntu_ec2_servers.html">RabbitMQ clustering and high availability on Ubuntu EC2 servers</a>
         </li><li>

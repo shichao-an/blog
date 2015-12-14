@@ -5,8 +5,32 @@
         <link>https://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Wed, 22 Jul 2015 00:00:00 -0700</pubDate>
+        <pubDate>Sun, 13 Dec 2015 00:00:00 -0800</pubDate>
         
+        <item>
+            <link>https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html</link>
+            <guid>https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html</guid>
+            <title><![CDATA[Personal Hotspot Backup Plan]]></title>
+            <description><![CDATA[<h1>Personal Hotspot Backup Plan</h1>
+<p>Although I have bought two ISPs for Internet access at home and have set up a dual WAN router to use them, it often sucks at busy nights when both ISPs churn me up with an over 80% packet loss for several hours due to a range of crappy outbound nodes of AT&amp;T. These can be easily observed with <span class="docutils literal"><span class="pre">mtr</span></span> and <span class="docutils literal"><span class="pre">ping</span></span>. In short, I simply cannot use the Internet with a normal mood.</p>
+<p>Therefore, I decided to make use of the LTE network of my iPhone via personal hotspot. The problem is to connect to the hotspot from my primary MacBook Pro (named ASC-MBP) while maintaining access to existing home network (named TOKI-MASTER), since I need accessing the NAS. The obvious way is to hack the routing table, so I wrote the following two scripts, along with a backup plan.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-switch-default-route">switch-default-route</a></li>
+<li><a class="reference external" href="https://gist.github.com/shichao-an/5be6baa2c6ebc2191ad7#file-restore-default-route">restore-default-route</a></li>
+</ul>
+<p>When Internet (both ISP) are down or unstable, do the following:</p>
+<p>On ASC-MBP, where Ethernet is plugged to TOKI-MASTER (10.0.1.1):</p>
+<ol class="arabic simple">
+<li>On iPhone 6, turn on Personal Hotspot</li>
+<li>On ASC-MBP, turn on Wi-Fi, and connect to ASC-IPHONE6</li>
+<li>On ASC-MBP, run command “switch-default-route”</li>
+<li>If Internet is back up, turn off Wi-Fi, run command “restore-default-route”</li>
+</ol>
+<p>By default, the iPhone Hotspot’s gateway address is 172.20.10.1, which is why it is in the script.</p>
+]]></description>
+             <pubDate>Sun, 13 Dec 2015 00:00:00 -0800</pubDate>
+        </item>
+    
         <item>
             <link>https://blog.shichao.io/2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html</link>
             <guid>https://blog.shichao.io/2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html</guid>
@@ -569,29 +593,6 @@ First, we reset and stop each node:</p>
 </div>
 ]]></description>
              <pubDate>Wed, 01 Oct 2014 00:00:00 -0700</pubDate>
-        </item>
-    
-        <item>
-            <link>https://blog.shichao.io/2014/05/02/fixing_mongodb_against_unclean_shutdown.html</link>
-            <guid>https://blog.shichao.io/2014/05/02/fixing_mongodb_against_unclean_shutdown.html</guid>
-            <title><![CDATA[Fixing MongoDB against unclean shutdown]]></title>
-            <description><![CDATA[<h1>Fixing MongoDB against unclean shutdown</h1>
-<p>It’s been a while since I maintained one of my servers that host an old project. After I got an HTTP 500 in an occasional case, I logged in to check what happened, only to find MongoDB is down. Running <span class="docutils literal"><span class="pre">service</span> <span class="pre">mongod</span> <span class="pre">restart</span></span> does not work. The MongoDB log indicates “Unclean shutdown detected.”</p>
-<p>After a search on Google, here’s what I did to fix that:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># grep dbpath /etc/mongod.conf</span>
-<span class="go">dbpath=/var/lib/mongo</span>
-<span class="go"># rm /var/lib/mongo/mongod.lock</span>
-<span class="go"># mongod --repair --dbpath /var/lib/mongo</span>
-</pre></div>
-</div>
-<p>At this point, you will see that MongoDB is running the repair process. If you immediately start MongoDB server after that, it still fails, because some permissions in /var/lib/mongo have been changed. You have to recover owner and group of those files back to “mongod” and then start the service:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># chown -R mongod:mongod /var/lib/mongo</span>
-<span class="go"># service mongod restart</span>
-</pre></div>
-</div>
-<p>Finally note that this is an CentOS server. If you use MongoDB on Ubuntu, some namings may be different.</p>
-]]></description>
-             <pubDate>Fri, 02 May 2014 00:00:00 -0700</pubDate>
         </item>
     
     </channel>

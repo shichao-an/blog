@@ -69,6 +69,37 @@
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
+            <span>June 30, 2013</span>
+        </div>
+        <div class="section">
+            <h1><a href="2013/06/30/add_static_route_on_mac_osx_and_bsd.html">Add static routes on Mac OS X and BSD descendants</a></h1>
+<p>Add a static route:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># route -n add -net 192.168.122.0/24  192.168.0.117</span>
+</pre></div>
+</div>
+<p>This is equivalent to the Linux command:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># route add -net 192.168.122.0 netmask 255.255.255.0 gw 192.168.0.117</span>
+</pre></div>
+</div>
+<p>List routing tables:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># netstat -r</span>
+</pre></div>
+</div>
+
+        </div>
+        <div class="postmeta">
+        <div class="author">
+            <span>Posted by Shichao An</span>
+        </div>
+        
+        <div class="tags">
+            <span>
+                Tags:
+                <a href="tags/os_x.html">OS X</a>, <a href="tags/bsd.html">BSD</a>, <a href="tags/network.html">Network</a></span>
+        </div>
+        <div class="comments">
+            <a href="https://blog.shichao.io/2013/06/30/add_static_route_on_mac_osx_and_bsd.html#disqus_thread" data-disqus-identifier="2013/06/30/add_static_route_on_mac_osx_and_bsd">Leave a comment</a>
+        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
             <span>March 29, 2013</span>
         </div>
         <div class="section">
@@ -621,35 +652,6 @@ set envelope_from=yes
         </div>
         <div class="comments">
             <a href="https://blog.shichao.io/2013/01/05/fix_eclipse_icon_in_unity_dash_on_ubuntu_12_10.html#disqus_thread" data-disqus-identifier="2013/01/05/fix_eclipse_icon_in_unity_dash_on_ubuntu_12_10">Leave a comment</a>
-        </div></div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>November 21, 2012</span>
-        </div>
-        <div class="section">
-            <h1><a href="2012/11/21/open_an_application_with_a_specific_language_on_mac_os_x.html">Open an application with a specific language on Mac OS X</a></h1>
-<p>While using iTunes on Mac OS X I encounter some little different issues from those on Windows. For example, some quasi-ID3-edited MP3 files suffer Mojibake in Japanese texts. Simple built-in conversion does not render them well. Even changing the language/region setting to “Japanese” fails to fix that. However, when changing language setting to “Chinese”, everything seems back to normal.</p>
-<p><img alt="s1" src="_images/Screen-Shot-2012-11-21-at-2.00.15-PM.png"/></p>
-<p>As far as I can tell after exploration, the cause was probably importing songs containing Japanese characters on Windows (Chinese) and then transfering to Mac, because those retrieved on Mac seem alright. But this does not apply to all that has the problem; some other songs transferred from Windows remain intact.</p>
-<p><a class="reference internal" href="_images/Screen-Shot-2012-11-21-at-2.14.31-PM.png"><img alt="s2" src="_images/Screen-Shot-2012-11-21-at-2.14.31-PM.png" style="width: 450px;"/></a></p>
-<p>It sounds a horrible idea to re-edit all ID3 in a proper language environment, so setting iTunes to a default language may be a compromising solution. Hands-on workaround in a simple like <a class="reference external" href="http://hints.macworld.com/article.php?story=20061001065101830">this</a> does not work any longer, and a new tool shows up — <a class="reference external" href="http://www.macupdate.com/app/mac/31850/language-switcher">Language Switcher</a>.</p>
-<p><a class="reference internal" href="_images/Screen-Shot-2012-11-21-at-2.30.03-PM.png"><img alt="s3" src="_images/Screen-Shot-2012-11-21-at-2.30.03-PM.png" style="width: 450px;"/></a></p>
-<p>Install and open it, choose “Chinese (China)” as the default start-up language for iTunes and relaunch the program. As you can see, ID3 are displayed properly as if having the system switched into Chinese.</p>
-<p><a class="reference internal" href="_images/Screen-Shot-2012-11-21-at-2.31.39-PM.png"><img alt="s4" src="_images/Screen-Shot-2012-11-21-at-2.31.39-PM.png" style="width: 450px;"/></a></p>
-<p><strong>UPDATE</strong></p>
-<p>As suggested by <a class="reference external" href="https://twitter.com/gnudog">drivel</a>, <span class="docutils literal"><span class="pre">mid3iconv</span> <span class="pre">-e</span> <span class="pre">GBK</span> <span class="pre">*.mp3</span></span> command from the <a class="reference external" href="https://pypi.python.org/pypi/mutagen">mutagen</a> Python package can used to solve the problem once for all.</p>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Shichao An</span>
-        </div>
-        
-        <div class="tags">
-            <span>
-                Tags:
-                <a href="tags/os_x.html">OS X</a></span>
-        </div>
-        <div class="comments">
-            <a href="https://blog.shichao.io/2012/11/21/open_an_application_with_a_specific_language_on_mac_os_x.html#disqus_thread" data-disqus-identifier="2012/11/21/open_an_application_with_a_specific_language_on_mac_os_x">Leave a comment</a>
         </div></div><div class="archive_link">
         <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
     </div><ul class="related clearfix">
@@ -658,6 +660,8 @@ set envelope_from=yes
         </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
+            <a href="2015/12/13/personal_hotspot_backup_plan.html">Personal Hotspot Backup Plan</a>
+        </li><li>
             <a href="2015/07/22/relationships_among_nice_priority_and_weight_in_linux_kernel.html">Relationships among nice, priority and weight in Linux kernel</a>
         </li><li>
             <a href="2015/05/21/setup_nss_ldapd_on_ubuntu_14_04.html">Setting up nss-ldapd on Ubuntu 14.04</a>
@@ -675,8 +679,6 @@ set envelope_from=yes
             <a href="2014/12/18/serving_local_filesystem_using_nginx_on_os_x.html">Serving local filesystem using nginx on OS X</a>
         </li><li>
             <a href="2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html">Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</a>
-        </li><li>
-            <a href="2014/05/02/fixing_mongodb_against_unclean_shutdown.html">Fixing MongoDB against unclean shutdown</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
@@ -708,11 +710,11 @@ set envelope_from=yes
       <a href="tags/linux.html" style="font-size: 20pt">Linux</a>&nbsp;&nbsp;
       <a href="tags/mongodb.html" style="font-size: 8pt">MongoDB</a>&nbsp;&nbsp;
       <a href="tags/mysql.html" style="font-size: 8pt">MySQL</a>&nbsp;&nbsp;
-      <a href="tags/network.html" style="font-size: 11pt">Network</a>&nbsp;&nbsp;
+      <a href="tags/network.html" style="font-size: 12pt">Network</a>&nbsp;&nbsp;
       <a href="tags/nginx.html" style="font-size: 8pt">Nginx</a>&nbsp;&nbsp;
       <a href="tags/ocaml.html" style="font-size: 8pt">OCaml</a>&nbsp;&nbsp;
       <a href="tags/openldap.html" style="font-size: 10pt">OpenLDAP</a>&nbsp;&nbsp;
-      <a href="tags/os_x.html" style="font-size: 17pt">OS X</a>&nbsp;&nbsp;
+      <a href="tags/os_x.html" style="font-size: 18pt">OS X</a>&nbsp;&nbsp;
       <a href="tags/perl.html" style="font-size: 10pt">Perl</a>&nbsp;&nbsp;
       <a href="tags/php.html" style="font-size: 8pt">PHP</a>&nbsp;&nbsp;
       <a href="tags/python.html" style="font-size: 15pt">Python</a>&nbsp;&nbsp;
