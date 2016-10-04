@@ -5,8 +5,60 @@
         <link>https://blog.shichao.io/</link>
         <description>Recording molecular stuff</description>
         <language>en-us</language>
-        <pubDate>Sun, 13 Dec 2015 00:00:00 -0800</pubDate>
+        <pubDate>Mon, 03 Oct 2016 00:00:00 -0700</pubDate>
         
+        <item>
+            <link>https://blog.shichao.io/2016/10/03/circumventing_internet_censorship_in_china.html</link>
+            <guid>https://blog.shichao.io/2016/10/03/circumventing_internet_censorship_in_china.html</guid>
+            <title><![CDATA[Circumventing Internet Censorship in China]]></title>
+            <description><![CDATA[<h1>Circumventing Internet Censorship in China</h1>
+<p>It’s been a while since I went back to China in June this year. This post is intended as a summary of my most recent Internet experience using some very useful bypassing techniques.</p>
+<div class="section" id="at-t-passport-data">
+<h2>AT&amp;T Passport Data</h2>
+<p>AT&amp;T Passport is the international data roaming plan by AT&amp;T. With this plan enabled, you are able to select available network carriers (such as China Unicom) while in China, but need no further censorship circumvention, as if you were using a non-China network carrier directly. I’m not clear if other mobile network providers behave similarly. However, this method has its limitations of data usage, so you cannot use it freely.</p>
+</div>
+<div class="section" id="ocserv-docker">
+<h2>ocserv-docker</h2>
+<p>OpenConnect VPN server (ocserv) works best of all means. It is fast and stable.</p>
+<p>To ease the server-side setup, I used <a class="reference external" href="https://github.com/wppurking/ocserv-docker">ocserv-docker</a> on a DigitalOcean box and a Linode box. By the time I was setting it up, there was some dependency errors, so I forked it into my <a class="reference external" href="https://github.com/shichao-an/ocserv-docker">own GitHub repo</a>, fixed the errors, and built a <a class="reference external" href="https://hub.docker.com/r/shichaoan/ocserv-docker/">Docker image</a>. I ran the following commands on an Ubuntu 14.04 system that uses UFW:</p>
+<div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># Add UFW rules</span>
+<span class="go">sudo ufw allow 443/tcp</span>
+<span class="go">sudo ufw allow 443/udp</span>
+<span class="go">sudo service iptables-persistent save</span>
+<span class="go">sudo ufw reload</span>
+
+<span class="go"># Install Docker image</span>
+<span class="go">mkdir -p ~/ocserv-docker/ocserv</span>
+<span class="go">touch ~/ocserv-docker/ocserv/ocpasswd</span>
+<span class="go">wget https://raw.githubusercontent.com/shichao-an/ocserv-docker/master/ocserv/ocserv.conf -O ~/ocserv-docker/ocserv/ocserv.conf</span>
+<span class="go">sudo docker run --name ocserv -d --privileged -v ~/ocserv-docker/ocserv:/etc/ocserv -p 443:443/tcp shichaoan/ocserv-docker</span>
+
+<span class="go"># Add user and prompt for password</span>
+<span class="go">sudo docker exec -it ocserv ocpasswd shichao</span>
+
+<span class="go"># Debug</span>
+<span class="go">sudo docker logs ocserv</span>
+<span class="go">sudo docker exec -ti ocserv /bin/bash</span>
+</pre></div>
+</div>
+<p>Then, you can install Cisco AnyConnect clients on both your computer and mobile devices and try to connect your server.</p>
+</div>
+<div class="section" id="shadowsocks">
+<h2>Shadowsocks</h2>
+<p>Shadowsocks also works well. It’s just that I didn’t bother to set it up my mobile devices, that is, iPhone and iPad. I set up the server side with my <a class="reference external" href="https://hub.docker.com/r/shichaoan/shadowsocks-libev/">Docker image</a>, whose source is <a class="reference external" href="https://github.com/shichao-an/docker-shadowsocks-libev">shichao-an/docker-shadowsocks-libev</a>.</p>
+</div>
+<div class="section" id="expressvpn">
+<h2>ExpressVPN</h2>
+<p><a class="reference external" href="https://www.expressvpn.com/">ExpressVPN</a>, one of the best commercial VPNs, is slow and unstable most of the time, which is basically unusable in China.</p>
+</div>
+<div class="section" id="pulse-secure">
+<h2>Pulse Secure</h2>
+<p>My company provides Pulse Secure SSL VPN. It is usable, but very slow.</p>
+</div>
+]]></description>
+             <pubDate>Mon, 03 Oct 2016 00:00:00 -0700</pubDate>
+        </item>
+    
         <item>
             <link>https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html</link>
             <guid>https://blog.shichao.io/2015/12/13/personal_hotspot_backup_plan.html</guid>
@@ -552,50 +604,6 @@ First, we reset and stop each node:</p>
 <p><a class="reference internal" href="https://blog.shichao.io/_images/nginx-fancyindex.png"><img alt="s1" src="https://blog.shichao.io/_images/nginx-fancyindex.png" style="width: 450px;"/></a></p>
 ]]></description>
              <pubDate>Thu, 18 Dec 2014 00:00:00 -0800</pubDate>
-        </item>
-    
-        <item>
-            <link>https://blog.shichao.io/2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html</link>
-            <guid>https://blog.shichao.io/2014/10/01/setup_virtualenvwrapper_with_pyenv_using_pyenv_virtualenvwrapper.html</guid>
-            <title><![CDATA[Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper]]></title>
-            <description><![CDATA[<h1>Setting up virtualenvwrapper with pyenv using pyenv-virtualenvwrapper</h1>
-<p>Typically on OS X, I’m prone to use <a class="reference external" href="https://github.com/yyuu/pyenv">pyenv</a> to manage multiple Python versions, particularly 2.7 and 3.3. I always keep the 2.7.x Python (system version) that ships with OS X, and install extra versions using pyenv, and develop under virtualenvs. It seems <a class="reference external" href="https://github.com/pypa/virtualenv/">virtualenv</a> and <a class="reference external" href="https://bitbucket.org/dhellmann/virtualenvwrapper/">virtualenvwrapper</a> do not natively work well with pyenv’s shims when creating new virtualenvs, and it also seems the author of pyenv already gives the solution, <a class="reference external" href="https://github.com/yyuu/pyenv-virtualenvwrapper">pyenv-virtualenvwrapper</a>.</p>
-<p>As an essential record, install Python 3.4.1 using pyenv (for installation of pyenv itself, see its <a class="reference external" href="https://github.com/yyuu/pyenv">documentation</a>) and enable it globally, along with the system version.</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ pyenv install 3.4.1</span>
-<span class="go">$ pyenv rehash</span>
-<span class="go">$ pyenv global system 3.4.1</span>
-</pre></div>
-</div>
-<p>You can verify current available versions using the following command:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ pyenv versions</span>
-<span class="go">* system (set by /Users/shichao/.python-version)</span>
-<span class="go">* 3.4.1 (set by /Users/shichao/.python-version)</span>
-</pre></div>
-</div>
-<p>Make sure you have installed virtualenvwrapper and pyenv-virtualenvwrapper (using brew, of course):</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ pip install virtualenvwrapper</span>
-<span class="go">$ brew install pyenv-virtualenvwrapper</span>
-</pre></div>
-</div>
-<p>Then, put the following lines somewhere in your <span class="docutils literal"><span class="pre">~/.bash_profile</span></span>:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># pyenv</span>
-<span class="nb">eval</span> <span class="s2">"</span><span class="k">$(</span>pyenv init -<span class="k">)</span><span class="s2">"</span>
-<span class="c"># virtualenvwrapper</span>
-<span class="nb">export </span><span class="nv">WORKON_HOME</span><span class="o">=</span>~/envs
-</pre></div>
-</div>
-<p>Then you can enable virtualenvwrapper with <span class="docutils literal"><span class="pre">pyenv</span> <span class="pre">virtualenvwrapper</span></span>, and you may set an alias for that.</p>
-<p>Now, you can normally create new virtualenvs.</p>
-<p>Create a virtualenv from the system version:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ mkvirtualenv env1 -p $(which python)</span>
-</pre></div>
-</div>
-<p>Similarly, create a virtualenv from 3.4:</p>
-<div class="highlight-shell-session"><div class="highlight"><pre><span class="go">$ mkvirtualenv env2 -p $(which python3.4)</span>
-</pre></div>
-</div>
-]]></description>
-             <pubDate>Wed, 01 Oct 2014 00:00:00 -0700</pubDate>
         </item>
     
     </channel>
