@@ -78,8 +78,8 @@
 <h2>AT&amp;T Passport Data</h2>
 <p>AT&amp;T Passport is the international data roaming plan by AT&amp;T. With this plan enabled, you are able to select available network carriers (such as China Unicom) while in China, but need no further censorship circumvention, as if you were using a non-China network carrier directly. I’m not clear if other mobile network providers behave similarly. However, this method has its limitations of data usage, so you cannot use it freely.</p>
 </div>
-<div class="section" id="ocserv-docker">
-<h2>ocserv-docker</h2>
+<div class="section" id="ocserv">
+<h2>ocserv</h2>
 <p>OpenConnect VPN server (ocserv) works best of all means. It is fast and stable.</p>
 <p>To ease the server-side setup, I used <a class="reference external" href="https://github.com/wppurking/ocserv-docker">ocserv-docker</a> on a DigitalOcean box and a Linode box. By the time I was setting it up, there was some dependency errors, so I forked it into my <a class="reference external" href="https://github.com/shichao-an/ocserv-docker">own GitHub repo</a>, fixed the errors, and built a <a class="reference external" href="https://hub.docker.com/r/shichaoan/ocserv-docker/">Docker image</a>. I ran the following commands on an Ubuntu 14.04 system that uses UFW:</p>
 <div class="highlight-shell-session"><div class="highlight"><pre><span class="go"># Add UFW rules</span>
@@ -106,7 +106,7 @@
 </div>
 <div class="section" id="shadowsocks">
 <h2>Shadowsocks</h2>
-<p>Shadowsocks also works well. It’s just that I didn’t bother to set it up my mobile devices, that is, iPhone and iPad. I set up the server side with my <a class="reference external" href="https://hub.docker.com/r/shichaoan/shadowsocks-libev/">Docker image</a>, whose source is <a class="reference external" href="https://github.com/shichao-an/docker-shadowsocks-libev">shichao-an/docker-shadowsocks-libev</a>.</p>
+<p>[Shadowsocks](<a class="reference external" href="https://shadowsocks.org">https://shadowsocks.org</a>) also works well. It’s just that I didn’t bother to set it up my mobile devices, that is, iPhone and iPad. I set up the server side with my <a class="reference external" href="https://hub.docker.com/r/shichaoan/shadowsocks-libev/">Docker image</a>, whose source is <a class="reference external" href="https://github.com/shichao-an/docker-shadowsocks-libev">shichao-an/docker-shadowsocks-libev</a>.</p>
 </div>
 <div class="section" id="expressvpn">
 <h2>ExpressVPN</h2>
